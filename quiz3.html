@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AP HuG Vocab — Infuse.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="stylesheet" href="shared.css">
+<style>
+.page-content{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:1rem;width:100%;}
+.quiz-wrap{width:100%;max-width:750px;padding:0 1rem 2rem;margin:0 auto;}
+
+/* ===== UNIT SELECTOR ===== */
+.unit-selector-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 80px);gap:1.5rem;width:100%;max-width:500px;margin:0 auto;padding:2rem 1rem;}
+.unit-selector-title{font-size:2rem;font-weight:900;color:#ff3333;text-align:center;text-shadow:0 0 20px rgba(255,51,51,0.3);}
+.unit-selector-sub{font-size:.85rem;color:#444;text-align:center;margin-top:-.5rem;}
+.unit-cards{display:flex;flex-direction:column;gap:.75rem;width:100%;}
+.unit-card{background:rgba(255,255,255,.02);border:1.5px solid rgba(255,51,51,.15);border-radius:16px;padding:1.2rem 1.5rem;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:space-between;gap:1rem;-webkit-tap-highlight-color:transparent;}
+.unit-card:hover{background:rgba(255,51,51,.08);border-color:rgba(255,51,51,.4);transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,51,51,.15);}
+.unit-card-left{display:flex;flex-direction:column;gap:.2rem;}
+.unit-card-num{font-size:.7rem;font-weight:700;color:#ff3333;text-transform:uppercase;letter-spacing:.1em;}
+.unit-card-name{font-size:1.05rem;font-weight:700;color:#fff;}
+.unit-card-count{font-size:.75rem;color:#444;}
+.unit-card-arrow{color:#ff3333;font-size:1.2rem;opacity:.6;transition:all .3s;}
+.unit-card:hover .unit-card-arrow{opacity:1;transform:translateX(4px);}
+.unit-card-progress{width:100%;height:3px;background:#111;border-radius:4px;margin-top:.6rem;overflow:hidden;}
+.unit-card-progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#ff3333,#ff6655);transition:width .4s;}
+
+/* ===== LEVEL UP POPUP ===== */
+.levelup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
+.levelup-overlay.show{opacity:1;pointer-events:auto;}
+.levelup-card{background:radial-gradient(ellipse at center,rgba(255,51,51,.15) 0%,rgba(10,10,10,.98) 70%);border:2px solid rgba(255,51,51,.4);border-radius:24px;padding:3rem 4rem;text-align:center;transform:scale(.7);transition:transform .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 80px rgba(255,51,51,.3);max-width:420px;width:90%;}
+.levelup-overlay.show .levelup-card{transform:scale(1);}
+.levelup-icon{font-size:4rem;margin-bottom:1rem;animation:levelBounce .6s ease;}
+@keyframes levelBounce{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.3) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+.levelup-title{font-size:1.8rem;font-weight:900;color:#ff3333;margin-bottom:.5rem;}
+.levelup-term{font-size:1rem;color:#888;margin-bottom:.3rem;}
+.levelup-level{font-size:1.2rem;font-weight:700;margin-top:.5rem;}
+.levelup-dismiss{margin-top:1.5rem;background:rgba(255,51,51,.15);border:1.5px solid rgba(255,51,51,.3);color:#ff3333;padding:.6rem 2rem;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.levelup-dismiss:hover{background:rgba(255,51,51,.25);}
+
+/* ===== SECTION MASTERY ===== */
+.section-mastery-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);z-index:2500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;}
+.section-mastery-overlay.show{opacity:1;pointer-events:auto;}
+.section-mastery-card{background:radial-gradient(ellipse at center,rgba(255,215,0,.12) 0%,rgba(10,10,10,.98) 70%);border:2px solid rgba(255,215,0,.4);border-radius:28px;padding:3rem;text-align:center;transform:scale(.7) rotate(-5deg);transition:transform .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 100px rgba(255,215,0,.3);max-width:460px;width:92%;}
+.section-mastery-overlay.show .section-mastery-card{transform:scale(1) rotate(0);}
+.section-mastery-icon{font-size:5rem;margin-bottom:1rem;animation:levelBounce .6s ease;}
+.section-mastery-title{font-size:2rem;font-weight:900;color:#ffd700;margin-bottom:.5rem;}
+.section-mastery-sub{font-size:1rem;color:#888;margin-bottom:.5rem;line-height:1.6;}
+.section-mastery-stats{font-size:.85rem;color:#666;margin-top:1rem;line-height:1.8;}
+.section-mastery-dismiss{margin-top:1.5rem;background:rgba(255,215,0,.15);border:1.5px solid rgba(255,215,0,.3);color:#ffd700;padding:.7rem 2.5rem;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.section-mastery-dismiss:hover{background:rgba(255,215,0,.25);}
+.particle{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:2501;animation:particleFly 1s ease-out forwards;}
+@keyframes particleFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)}}
+
+/* ===== MASTERY PANEL ===== */
+.mastery-panel{width:100%;margin-bottom:1rem;border-radius:12px;border:1px solid #151515;overflow:hidden;}
+.mastery-panel-header{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1rem;background:rgba(255,255,255,.015);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .2s;}
+.mastery-panel-header:hover{background:rgba(255,51,51,.05);}
+.mastery-panel-title{font-size:.75rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:.5rem;}
+.mastery-panel-title .mp-dot{width:6px;height:6px;border-radius:50%;background:#ff3333;box-shadow:0 0 6px rgba(255,51,51,.5);}
+.mastery-panel-toggle{font-size:.7rem;color:#333;transition:transform .3s;}
+.mastery-panel-toggle.open{transform:rotate(180deg);}
+.mastery-panel-body{display:none;padding:.8rem 1rem;background:rgba(255,255,255,.01);border-top:1px solid #111;}
+.mastery-panel-body.open{display:block;}
+.mastery-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.8rem;}
+.mastery-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .55rem;border-radius:6px;font-size:.7rem;font-weight:600;border:1px solid;}
+.mastery-chip .chip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.mc-new{background:rgba(255,255,255,.03);border-color:#1a1a1a;color:#444;}
+.mc-new .chip-dot{background:#333;}
+.mc-familiar{background:rgba(255,170,51,.08);border-color:rgba(255,170,51,.2);color:#ffaa33;}
+.mc-familiar .chip-dot{background:#ffaa33;box-shadow:0 0 6px rgba(255,170,51,.4);}
+.mc-learning{background:rgba(51,170,255,.08);border-color:rgba(51,170,255,.2);color:#33aaff;}
+.mc-learning .chip-dot{background:#33aaff;}
+.mc-confident{background:rgba(0,200,100,.08);border-color:rgba(0,200,100,.2);color:#00c864;}
+.mc-confident .chip-dot{background:#00c864;}
+.mc-expert{background:rgba(180,80,255,.08);border-color:rgba(180,80,255,.2);color:#b450ff;}
+.mc-expert .chip-dot{background:#b450ff;}
+.mc-legendary{background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.25);color:#ffd700;}
+.mc-legendary .chip-dot{background:#ffd700;box-shadow:0 0 8px rgba(255,215,0,.5);}
+.mastery-panel-actions{display:flex;gap:.5rem;margin-top:.5rem;}
+.reset-mastery-btn{background:none;border:1px solid #222;color:#444;font-size:.7rem;padding:.3rem .7rem;border-radius:6px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.reset-mastery-btn:hover{border-color:#ff3333;color:#ff3333;}
+.back-btn{background:none;border:1px solid #222;color:#555;font-size:.7rem;padding:.3rem .7rem;border-radius:6px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.back-btn:hover{border-color:#888;color:#aaa;}
+
+/* ===== XP BAR ===== */
+.xp-bar-container{width:100%;margin-bottom:1rem;padding:.8rem 1rem;background:rgba(255,255,255,.015);border:1px solid #151515;border-radius:12px;}
+.xp-bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.xp-bar-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.xp-bar-count{font-size:.7rem;color:#444;}
+.xp-bar-track{width:100%;height:8px;background:#111;border-radius:8px;overflow:hidden;}
+.xp-bar-fill{height:100%;border-radius:8px;transition:width .6s cubic-bezier(.34,1.56,.64,1);position:relative;}
+.xp-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:xpShine 2s ease-in-out infinite;}
+@keyframes xpShine{0%,100%{opacity:0}50%{opacity:1}}
+.xp-bar-levels{display:flex;justify-content:space-between;margin-top:.4rem;}
+.xp-level-mark{font-size:.6rem;font-weight:600;color:#333;display:flex;flex-direction:column;align-items:center;gap:.15rem;}
+.xp-level-mark.reached{color:#888;}
+.xp-level-mark .xp-dot{width:4px;height:4px;border-radius:50%;background:#222;transition:all .3s;}
+.xp-level-mark.reached .xp-dot{background:#ff3333;box-shadow:0 0 6px rgba(255,51,51,.5);}
+
+/* ===== QUIZ ===== */
+.quiz-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;}
+.quiz-header-row h2{color:#ff3333;font-size:1.4rem;font-weight:900;}
+.quiz-unit-badge{font-size:.7rem;font-weight:700;color:#ff3333;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);padding:.2rem .6rem;border-radius:6px;white-space:nowrap;}
+.quiz-progress{color:#555;font-size:.85rem;margin-bottom:.4rem;}
+.progress-bar-wrap{width:100%;height:3px;background:#151515;border-radius:10px;margin-bottom:.8rem;overflow:hidden;}
+.progress-bar-fill{height:3px;background:linear-gradient(90deg,#ff3333,#ff6655);border-radius:10px;transition:width .4s;}
+.quiz-card{background:rgba(255,255,255,.015);border:1.5px solid rgba(255,255,255,.06);border-radius:16px;width:100%;padding:1.8rem;box-shadow:0 4px 30px rgba(0,0,0,.3);text-align:left;}
+.quiz-question{font-size:1.05rem;font-weight:600;color:#fff;margin-bottom:1.3rem;line-height:1.5;}
+.choices{display:flex;flex-direction:column;gap:.5rem;}
+.choice-btn{background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.06);border-radius:10px;color:#bbb;padding:.8rem 1rem;font-size:.9rem;text-align:left;cursor:pointer;transition:all .2s;line-height:1.4;font-family:'Inter',sans-serif;-webkit-appearance:none;}
+.choice-btn:hover:not(:disabled){background:rgba(255,51,51,.08);border-color:rgba(255,51,51,.3);color:#fff;}
+.choice-btn.correct{background:rgba(0,200,100,.12);border-color:rgba(0,200,100,.4);color:#7fffb2;}
+.choice-btn.wrong{background:rgba(255,51,51,.12);border-color:rgba(255,51,51,.4);color:#ff8888;}
+.choice-btn.reveal{background:rgba(0,200,100,.06);border-color:rgba(0,200,100,.3);color:#7fffb2;}
+.choice-btn:disabled{cursor:default;}
+.quiz-feedback{margin-top:1rem;font-size:.9rem;min-height:1.4rem;}
+.feedback-correct{color:#00c864;font-weight:700;display:block;margin-bottom:.4rem;}
+.feedback-wrong{color:#ff6666;font-weight:700;display:block;margin-bottom:.4rem;}
+.feedback-explanation{display:block;background:rgba(255,255,255,.02);border-left:3px solid #ff3333;border-radius:0 8px 8px 0;padding:.6rem .85rem;color:#888;font-size:.83rem;line-height:1.5;margin-top:.5rem;animation:fadeIn .3s ease;}
+.feedback-explanation.good{border-left-color:#00c864;}
+.feedback-explanation .expl-label{font-weight:700;color:#ccc;display:block;margin-bottom:.15rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.next-btn{margin-top:1.2rem;background:#ff3333;color:#fff;border:none;border-radius:10px;padding:.75rem 2.2rem;font-size:.9rem;font-weight:700;cursor:pointer;display:none;transition:all .2s;font-family:'Inter',sans-serif;-webkit-appearance:none;}
+.next-btn:hover{background:#e02020;transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,51,51,.4);}
+.mode-selector{display:flex;gap:.35rem;margin-bottom:1rem;width:100%;}
+.mode-btn{flex:1;padding:.5rem .4rem;border-radius:8px;border:1.5px solid #181818;background:rgba(255,255,255,.01);color:#444;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;font-family:'Inter',sans-serif;-webkit-appearance:none;}
+.mode-btn:hover{border-color:rgba(255,51,51,.3);color:#ccc;background:rgba(255,51,51,.05);}
+.mode-btn.active{border-color:#ff3333;background:rgba(255,51,51,.12);color:#fff;}
+.mastery-tag{display:inline-flex;align-items:center;gap:.2rem;padding:.12rem .45rem;border-radius:4px;font-size:.68rem;font-weight:700;margin-left:.4rem;border:1px solid;}
+.quiz-result{text-align:center;width:100%;}
+.quiz-result h3{font-size:1.6rem;color:#ff3333;margin-bottom:.8rem;}
+.quiz-result .score{font-size:3.2rem;font-weight:900;color:#fff;margin-bottom:.4rem;}
+.quiz-result .score-label{color:#555;margin-bottom:1.5rem;font-size:.95rem;}
+.restart-btn{background:#ff3333;color:#fff;border:none;border-radius:10px;padding:.8rem 2.5rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;margin-right:.5rem;}
+.restart-btn:hover{background:#e02020;transform:translateY(-2px);}
+.change-unit-btn{background:none;border:1.5px solid #333;color:#666;border-radius:10px;padding:.8rem 1.5rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.change-unit-btn:hover{border-color:#888;color:#aaa;}
+.missed-list{width:100%;margin-top:2rem;text-align:left;}
+.missed-list h4{color:#ff3333;margin-bottom:.8rem;font-size:.95rem;}
+.missed-item{background:rgba(255,255,255,.015);border:1px solid #181818;border-radius:10px;padding:.7rem 1rem;margin-bottom:.4rem;font-size:.85rem;color:#777;line-height:1.4;}
+.missed-item strong{color:#fff;}
+@media(max-width:768px){.quiz-header-row h2{font-size:1.2rem;}.quiz-card{padding:1.2rem;}.quiz-question{font-size:.95rem;}.choice-btn{padding:.7rem .85rem;font-size:.82rem;}.mode-selector{flex-wrap:wrap;}.mode-btn{font-size:.72rem;padding:.45rem .3rem;}.xp-level-mark{font-size:.5rem;}.next-btn{padding:.7rem 1.8rem;font-size:.85rem;}.quiz-result .score{font-size:2.5rem;}.unit-selector-title{font-size:1.5rem;}.levelup-card{padding:2rem 1.5rem;}.section-mastery-card{padding:2rem 1.5rem;}}
+</style>
+</head>
+<body>
+
+<div class="levelup-overlay" id="levelupOverlay">
+  <div class="levelup-card">
+    <div class="levelup-icon" id="levelupIcon"></div>
+    <div class="levelup-title">LEVEL UP!</div>
+    <div class="levelup-term" id="levelupTerm"></div>
+    <div class="levelup-level" id="levelupLevel"></div>
+    <button class="levelup-dismiss" id="levelupDismiss">Continue</button>
+  </div>
+</div>
+
+<div class="section-mastery-overlay" id="sectionMasteryOverlay">
+  <div class="section-mastery-card">
+    <div class="section-mastery-icon" id="sectionMasteryIcon">🏆</div>
+    <div class="section-mastery-title" id="sectionMasteryTitle">SECTION MASTERED!</div>
+    <div class="section-mastery-sub" id="sectionMasterySub"></div>
+    <div class="section-mastery-stats" id="sectionMasteryStats"></div>
+    <button class="section-mastery-dismiss" id="sectionMasteryDismiss">Amazing!</button>
+  </div>
+</div>
+
+<nav class="tab-bar">
+  <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg><span class="tab-title">Home</span></a>
+  <a class="tab" href="/amongus"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg><span class="tab-title">Among Us</span></a>
+  <a class="tab active" href="/vocab3"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-title">AP HuG Vocab</span></a>
+  <a class="tab" href="/chat"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg><span class="tab-title">Chat</span></a>
+  <a class="tab" href="/flappy"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/><path d="M6 7l-2-3 1-1 3 2z" fill="#ff3333" opacity=".7"/><path d="M8 5l-1-3 1.5-.5 1.5 3z" fill="#ff3333" opacity=".5"/></svg><span class="tab-title">Flappy Bird</span></a>
+</nav>
+
+<div class="page-content">
+  <div class="quiz-wrap">
+    <div id="quiz-container"></div>
+  </div>
+</div>
+
+<script>
+// ===== MASTERY =====
+const MASTERY_KEY='infuse_vocab_mastery_v2';
+const SECTION_MASTERY_KEY='infuse_section_mastery_shown_v2';
+const MASTERY_LEVELS=[
+  {name:'New',      key:'new',       min:0,  color:'#444',   bg:'rgba(255,255,255,0.03)', border:'#1a1a1a'},
+  {name:'Familiar', key:'familiar',  min:1,  color:'#ffaa33',bg:'rgba(255,170,51,0.08)',  border:'rgba(255,170,51,0.2)'},
+  {name:'Learning', key:'learning',  min:3,  color:'#33aaff',bg:'rgba(51,170,255,0.08)',  border:'rgba(51,170,255,0.2)'},
+  {name:'Confident',key:'confident', min:5,  color:'#00c864',bg:'rgba(0,200,100,0.08)',   border:'rgba(0,200,100,0.2)'},
+  {name:'Expert',   key:'expert',    min:8,  color:'#b450ff',bg:'rgba(180,80,255,0.08)',  border:'rgba(180,80,255,0.2)'},
+  {name:'Legendary',key:'legendary', min:12, color:'#ffd700',bg:'rgba(255,215,0,0.1)',    border:'rgba(255,215,0,0.25)'},
+];
+function loadMastery(){try{return JSON.parse(localStorage.getItem(MASTERY_KEY))||{};}catch(e){return {};}}
+function saveMastery(m){localStorage.setItem(MASTERY_KEY,JSON.stringify(m));}
+function getMasteryLevel(c){let l=MASTERY_LEVELS[0];for(const x of MASTERY_LEVELS)if(c>=x.min)l=x;return l;}
+function getMasteryLevelIdx(c){let i=0;for(let j=0;j<MASTERY_LEVELS.length;j++)if(c>=MASTERY_LEVELS[j].min)i=j;return i;}
+function loadShown(){try{return JSON.parse(localStorage.getItem(SECTION_MASTERY_KEY))||{};}catch(e){return {};}}
+function saveShown(s){localStorage.setItem(SECTION_MASTERY_KEY,JSON.stringify(s));}
+function recordCorrect(term){
+  const m=loadMastery(),old=m[term]||0,oi=getMasteryLevelIdx(old);
+  m[term]=old+1;saveMastery(m);const ni=getMasteryLevelIdx(m[term]);
+  return{count:m[term],leveled:ni>oi,level:MASTERY_LEVELS[ni]};
+}
+function resetMasteryForUnit(terms){const m=loadMastery();terms.forEach(t=>delete m[t.term]);saveMastery(m);}
+
+// ===== VOCAB DATA =====
+const UNITS=[
+  {
+    id:'unit3',
+    name:'Unit 3 — Population & Migration',
+    shortName:'Unit 3',
+    color:'#ff3333',
+    terms:[
+      {term:"Arithmetic Density",def:"The total number of people divided by the total land area.",why:"Simplest density measure — total people ÷ total area, regardless of usability."},
+      {term:"Physiological Density",def:"The number of people per unit of area of arable land suitable for agriculture.",why:"Focuses on farmable land — better sense of how many people the land must support."},
+      {term:"Agricultural Density",def:"The ratio of farmers to the total amount of arable land.",why:"Lower values usually indicate more mechanized, efficient farming."},
+      {term:"Carrying Capacity",def:"The maximum population size an environment can sustainably support without degrading its resources.",why:"Think of it as an environment's 'limit' — exceed it and it starts breaking down."},
+      {term:"Sex Ratio",def:"The number of males per 100 females in the population.",why:"Always expressed as males per 100 females. Above 100 = more males; below 100 = more females."},
+      {term:"Population Pyramid",def:"A bar graph displaying the percentage of a population for each age and gender.",why:"Double-sided bar graphs — left = males, right = females, stacked by age group."},
+      {term:"Demographic",def:"The study of statistical characteristics of human populations such as age, gender, ethnicity, income, and education.",why:"From Greek: demos (people) + graphia (study)."},
+      {term:"Fertility",def:"The actual reproductive performance of a population, measured by live births.",why:"About actual births that occur, not potential. Differs from fecundity (biological capacity)."},
+      {term:"Mortality",def:"The incidence of death within a population, usually measured per 1,000 individuals.",why:"Just the death rate — measured per 1,000 people to allow comparison between populations."},
+      {term:"Zero Population Growth (ZPG)",def:"A stable population state where CBR equals CDR, resulting in a Natural Increase Rate of 0.",why:"Births exactly cancel out deaths — NIR = 0."},
+      {term:"Migration",def:"A permanent move to a new location (voluntary or involuntary).",why:"Key word is permanent — tourism or temporary relocation doesn't count."},
+      {term:"NIR (Natural Increase Rate)",def:"The percentage by which a population grows in a year. CBR minus CDR.",why:"NIR = CBR − CDR. Only counts natural change (births vs. deaths), not migration."},
+      {term:"Population Doubling Time",def:"Years needed to double a population, assuming a constant rate of natural increase.",why:"Rule of 70: divide 70 by the NIR (%) to estimate doubling time."},
+      {term:"Demographic Transition Model",def:"A model mapping a country's population growth through 4–5 stages, from high birth/death rates to low birth/death rates.",why:"Shows how countries shift from pre-industrial to post-industrial population patterns."},
+      {term:"Epidemiologic Transition",def:"The shift in disease patterns from high mortality due to infectious disease to low mortality from chronic diseases.",why:"As countries develop, people stop dying from infectious diseases and instead die from chronic ones."},
+      {term:"Thomas Malthus",def:"An English economist who argued population increase outpaces food supply development.",why:"Malthus (1798) warned population grows exponentially while food grows arithmetically."},
+      {term:"Malthusian Theory",def:"The theory that population grows faster than food supply, central to resource sustainability debates.",why:"Predicts population will always outpace food production, leading to crises."},
+      {term:"Pronatalist",def:"Government incentives designed to increase fertility rates and encourage population growth.",why:"Pro = 'for,' natalist = 'birth.' Encourages more babies."},
+      {term:"Antinatalist",def:"Government strategies aimed at reducing birth rates, often in response to overpopulation.",why:"Anti = 'against,' natalist = 'birth.' China's One-Child Policy is the most famous example."},
+      {term:"Immigration Policies",def:"Laws and practices established by a country to control the entry, stay, and exit of foreign nationals.",why:"The rules a country sets to manage who can enter and remain."},
+      {term:"Ravenstein's Laws of Migration",def:"States that most migration is short-distance, step-by-step, and economically driven.",why:"Ravenstein (1885): most migrants move short distances, migration happens in steps."},
+      {term:"Crude Death Rate (CDR)",def:"The total number of deaths per year for every 1,000 people alive in the society.",why:"'Crude' because it doesn't control for age structure."},
+      {term:"Distribution",def:"The spatial arrangement or spread of people across the Earth's surface.",why:"Describes where people live across Earth."},
+      {term:"Life Expectancy",def:"The average number of years an individual can be expected to live given current conditions.",why:"Rises with better healthcare, sanitation, and wealth."},
+      {term:"Dependency Ratio",def:"Measures dependents (under 15 or over 65) compared to the working-age population (15–64).",why:"A high dependency ratio means fewer workers supporting more dependents."},
+      {term:"Push Factors",def:"Negative conditions that compel people to migrate out of their present location.",why:"Push people away from their origin: war, famine, persecution."},
+      {term:"Pull Factors",def:"Positive conditions that induce people to move to a new location.",why:"Pull people toward a destination: jobs, freedom, family connections."},
+      {term:"Intervening Opportunities",def:"Favorable closer alternatives that cause a migrant to settle before reaching their original destination.",why:"Stops a migrant short of their goal."},
+      {term:"Intervening Obstacles",def:"Environmental, political, or social features that hinder or redirect migration.",why:"Block or detour migration — mountains, deserts, border walls, immigration laws."},
+      {term:"Forced Migration",def:"Involuntary permanent movement compelled by conflict, persecution, environmental disasters, or government policies.",why:"Involuntary — people have no real choice."},
+      {term:"Refugees",def:"People forced to migrate to another country to avoid conflict, violence, or persecution, and cannot return.",why:"Have crossed an international border and cannot safely return home."},
+      {term:"Internally Displaced Person (IDP)",def:"Someone forced to migrate for similar reasons as a refugee but who has not crossed an international border.",why:"Like refugees but stay within their home country's borders."},
+      {term:"Asylum Seeker",def:"Someone who has migrated to another country hoping to be recognized as a refugee.",why:"Waiting for official refugee status to be granted."},
+      {term:"Voluntary Migration",def:"The migrant has chosen to move, usually for economic reasons driven by pull factors.",why:"A free-will decision, typically driven by pull factors."},
+      {term:"Transnational Migration",def:"Movement across international borders where migrants maintain strong ties to their home country.",why:"Migrants live 'between' two cultures."},
+      {term:"Transhumance",def:"The seasonal migration of livestock between mountains and lowland pastures.",why:"Very specific — herders move animals seasonally."},
+      {term:"Internal Migration",def:"Permanent movement within a country's borders.",why:"Stays within one country — rural-to-urban is the most common form."},
+      {term:"Chain Migration",def:"Migration to a location because relatives or co-nationals previously migrated there.",why:"Creates ethnic enclaves — one pioneer migrant, then family and friends follow."},
+      {term:"Step Migration",def:"A voluntary migration pattern of smaller incremental stages to reach a final destination.",why:"Gradual — small town → mid-sized city → major metropolis."},
+      {term:"Guest Workers",def:"Foreign nationals permitted to live and work temporarily in a host country.",why:"Fill labor shortages temporarily — they are not permanent residents."},
+      {term:"Ecumene",def:"The portion of Earth's surface occupied by permanent human settlement.",why:"Where people actually live permanently — about 30% of Earth's surface."},
+      {term:"Non-Ecumene",def:"The uninhabited or uninhabitable area of the world deemed too harsh for permanent habitation.",why:"Includes deserts, polar regions, high mountains, and dense jungles."},
+      {term:"Maternal Mortality Rate",def:"Annual female deaths per 100,000 live births from causes related to pregnancy.",why:"Measured per 100,000 live births — a key development indicator."},
+      {term:"Infant Mortality Rate (IMR)",def:"Annual deaths of infants under 1 year of age, per 1,000 live births.",why:"One of the best single indicators of a country's overall development."},
+    ]
+  },
+  {
+    id:'unit5',
+    name:'Unit 5 — Agriculture & Food Production',
+    shortName:'Unit 5',
+    color:'#33aaff',
+    terms:[
+      {term:"Climatic Conditions",def:"How weather affects agricultural practices and products.",why:"Climate determines what crops can grow where — temperature, rainfall, and seasons all shape agriculture."},
+      {term:"Intensive Farming Practices",def:"Farming that uses significant amounts of labor and/or money relative to land area.",why:"Intensive = high inputs (labor, capital) on smaller land areas to maximize yield."},
+      {term:"Market Gardening",def:"Small scale food production of fruits and vegetables for sale at local markets.",why:"Small-scale, local, focused on fresh produce — distinct from large commercial farming."},
+      {term:"Plantation Agriculture",def:"Cash crops grown on large estates, usually for export; a legacy of colonization.",why:"Think cotton, coffee, sugar, tea — large-scale, export-oriented, colonial legacy."},
+      {term:"Mixed Crop/Livestock Systems",def:"Combination of cash crops and livestock to complement land and labor demands across the year.",why:"Diversifies income and labor — crops and animals support each other seasonally."},
+      {term:"Extensive Farming Practices",def:"Farming that uses smaller amounts of labor and money relative to the land area.",why:"Extensive = low inputs spread over large land areas, like ranching or wheat farming."},
+      {term:"Shifting Cultivation (Slash and Burn)",def:"Cultivation using a natural rotation system by clear cutting vegetation and burning to improve soil fertility.",why:"Used in tropical climates — burn clears land and adds nutrients, then move on when soil depletes."},
+      {term:"Nomadic Herding",def:"Seasonal migration of domesticated livestock within a fixed territory of highlands or lowlands.",why:"Also called pastoral nomadism/transhumance — herders follow seasonal pasture availability."},
+      {term:"Long-Lot Survey System",def:"Land divided into narrow parcels stretching along rivers, roads, or canals giving each household equal water access.",why:"Common in French-influenced areas (Louisiana, Quebec) — everyone gets river frontage."},
+      {term:"Metes and Bounds Survey System",def:"Survey of irregularly shaped tracts of land using natural features as reference points.",why:"Relies on descriptions of land ownership referencing natural landmarks — common in eastern US."},
+      {term:"Township and Range Survey System",def:"Rectangular survey system used by the U.S. federal government to divide land into a grid pattern.",why:"Designed by Thomas Jefferson to distribute settlers evenly — creates the checkerboard look of the Midwest."},
+      {term:"Columbian Exchange",def:"The global diffusion of plants, animals, diseases, human population, culture, technology, and ideas after 1492.",why:"Columbus's voyages triggered a massive exchange between Old and New Worlds — shaped modern agriculture globally."},
+      {term:"Globalization of Agriculture",def:"Improvements in transportation and communication technologies creating a variety of goods offered year round.",why:"Technology erases seasonal and geographic limits — strawberries in winter, coffee from everywhere."},
+      {term:"First Agricultural Revolution",def:"Dating back 10,000 years, when humans achieved plant and animal domestication.",why:"The original shift from hunting/gathering to farming — foundation of civilization."},
+      {term:"Second Agricultural Revolution",def:"Improved cultivation, harvesting, and storage methods starting in the Middle Ages, benefitting from the Industrial Revolution.",why:"Bridge between subsistence farming and modern commercial agriculture."},
+      {term:"Industrial Revolution",def:"The transformation from an agricultural to an industrial society with power-driven machines in manufacturing, mining, transportation, and agriculture.",why:"Mechanized farming, mass production — fundamentally changed how food and goods were made."},
+      {term:"Green Revolution (Third Agricultural Revolution)",def:"High yield seeds, increased use of chemicals, mechanized farming, and elaborate irrigation systems.",why:"Mid-20th century — dramatically increased food production in developing countries but raised environmental concerns."},
+      {term:"Subsistence Agriculture",def:"Only enough food is cultivated to survive with no surplus to sell; land often held in common.",why:"Farming for survival, not profit — no surplus, community land ownership common."},
+      {term:"Commercial Agriculture",def:"The production of crops for sale and profit.",why:"Farming for the market — driven by profit, scale, and efficiency."},
+      {term:"Monoculture",def:"Growing one crop in a farm system at a given time.",why:"Efficient but risky — one disease or pest can wipe out the entire crop."},
+      {term:"Mono-Cropping",def:"Growing one crop in a farm system year after year.",why:"Unlike monoculture (one crop at a time), mono-cropping means the same crop every season — depletes soil."},
+      {term:"Bid-Rent Theory",def:"Theory showing what various land users are prepared to pay for access to the center market (CBD); cost decreases further from the market.",why:"Land closest to the city center is most valuable — businesses outbid residents who outbid farmers."},
+      {term:"Agribusiness",def:"A large-scale mechanized farming business controlled by corporate interests.",why:"Agriculture increasingly controlled by a small number of large corporations instead of independent farmers."},
+      {term:"Feedlots/CAFOs",def:"Animals kept in confined spaces and given hormones/antibiotics/fattening grains to prepare for slaughter quickly.",why:"Concentrated Animal Feeding Operations — efficient but controversial for animal welfare and environmental impact."},
+      {term:"Commodity Chain",def:"Activities involved in the creation of a product: design, production of raw materials, manufacturing, assembly, and distribution.",why:"Traces a product from farm/factory to consumer — highlights global economic connections."},
+      {term:"Economies of Scale",def:"Cost advantages gained by an increased level of production.",why:"Bigger = cheaper per unit — why large farms and corporations can undercut small producers."},
+      {term:"Von Thünen Model",def:"Explains agricultural location by emphasizing transportation costs and what should be grown in relation to the market.",why:"Represents land cost vs. transportation cost — perishables grown closest to the market."},
+      {term:"Commodity Dependency",def:"Being highly dependent on one or more export commodities.",why:"Risky for countries — if one crop's price drops, the whole economy suffers."},
+      {term:"Global Food Distribution",def:"Networks affected by political relationships, infrastructure, and patterns of world trade.",why:"Food doesn't just go where it's needed — politics, trade deals, and infrastructure shape who gets what."},
+      {term:"Desertification",def:"Process by which fertile land becomes desert as a result of human activity.",why:"Overgrazing, deforestation, and poor irrigation can turn productive land into wasteland."},
+      {term:"Soil Salinization",def:"Process by which the amount of salt increases in the soil, often due to irrigation.",why:"Over-irrigation brings salts to the surface — makes soil infertile over time."},
+      {term:"Sustainable Agriculture",def:"Farming methods that are profitable, environmentally sound, and good for communities.",why:"The triple bottom line for farming: economic, environmental, and social sustainability."},
+      {term:"Land Cover Change",def:"Process by which agricultural areas are lost to development.",why:"Urbanization, sprawl, and development permanently remove farmland from production."},
+      {term:"Terraces",def:"Flat steps created on the sides of hills to create more land for farming.",why:"Ancient technique — cuts into hillsides to create flat planting surfaces, prevents erosion."},
+      {term:"Deforestation",def:"Clearing of forest to make land available for other uses such as agriculture or livestock.",why:"Forests cleared for farmland — major driver of climate change and biodiversity loss."},
+      {term:"Pastoral Nomadism",def:"Use of pasture land for animal grazing by nomadic herders.",why:"Herders move animals to follow seasonal grazing opportunities — no permanent settlement."},
+      {term:"Aquaculture",def:"Raising of fish and shellfish in ponds and controlled saltwater hatcheries.",why:"Fish farming — supplements wild fisheries as ocean stocks decline."},
+      {term:"Urban Farming",def:"Agriculture in the form of rooftop, balcony, backyard gardening, and growing in vacant lots and parks in urban areas.",why:"Brings food production into cities — reduces transport distances and improves food access."},
+      {term:"Food Insecurity",def:"The state of being without reliable access to sufficient affordable, nutritious food.",why:"Not just hunger — it's about consistent, reliable access to quality food."},
+      {term:"Food Desert",def:"A geographic area where large grocery stores are scarce and residents have limited access to fresh nutritious foods.",why:"Typically found in urban, low-income neighborhoods — convenience stores but no fresh produce."},
+    ]
+  }
+];
+
+// ===== STATE =====
+let currentUnit=null,questions=[],current=0,score=0,missed=[],quizMode='mixed';
+let masteryPanelOpen=false;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ===== MASTERY HELPERS =====
+function getMasteryTagHTML(term){
+  const m=loadMastery(),c=m[term]||0,l=getMasteryLevel(c);
+  return `<span class="mastery-tag" style="background:${l.bg};border-color:${l.border};color:${l.color}"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${l.color};margin-right:3px;"></span>${l.name}</span>`;
+}
+
+function getXPBarHTML(term){
+  const m=loadMastery(),c=m[term]||0,l=getMasteryLevel(c),li=getMasteryLevelIdx(c);
+  const nl=MASTERY_LEVELS[li+1];let pct=100;
+  if(nl){const base=MASTERY_LEVELS[li].min;pct=Math.min(100,Math.round(((c-base)/(nl.min-base))*100));}
+  const grad=nl?`linear-gradient(90deg,${l.color},${nl.color})`:`linear-gradient(90deg,${l.color},${l.color})`;
+  return `<div class="xp-bar-container">
+    <div class="xp-bar-header"><span class="xp-bar-label" style="color:${l.color}">${l.name}</span><span class="xp-bar-count">${c} correct${nl?` · ${nl.min-c} to ${nl.name}`:' · MAX'}</span></div>
+    <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${pct}%;background:${grad};box-shadow:0 0 10px ${l.color}40;"></div></div>
+    <div class="xp-bar-levels">${MASTERY_LEVELS.map(x=>`<span class="xp-level-mark ${c>=x.min?'reached':''}" style="${c>=x.min?'color:'+x.color:''}"><span class="xp-dot" style="${c>=x.min?'background:'+x.color:''};"></span>${x.name}</span>`).join('')}</div>
+  </div>`;
+}
+
+function getMasteryPanelHTML(terms){
+  const m=loadMastery();
+  const counts={new:0,familiar:0,learning:0,confident:0,expert:0,legendary:0};
+  terms.forEach(v=>counts[getMasteryLevel(m[v.term]||0).key]++);
+  const total=terms.length;
+  const done=terms.filter(v=>(m[v.term]||0)>=1).length;
+  const pct=Math.round((done/total)*100);
+  return `<div class="mastery-panel" id="masteryPanel">
+    <div class="mastery-panel-header" id="masteryPanelHeader">
+      <span class="mastery-panel-title"><span class="mp-dot"></span>Mastery Progress — ${pct}% started</span>
+      <span class="mastery-panel-toggle ${masteryPanelOpen?'open':''}" id="masteryToggleArrow">▼</span>
+    </div>
+    <div class="mastery-panel-body ${masteryPanelOpen?'open':''}" id="masteryPanelBody">
+      <div class="mastery-chips">
+        ${MASTERY_LEVELS.map(l=>`<span class="mastery-chip mc-${l.key}"><span class="chip-dot"></span>${l.name}: ${counts[l.key]}</span>`).join('')}
+      </div>
+      <div class="mastery-panel-actions">
+        <button class="reset-mastery-btn" id="resetMasteryBtn">🗑 Reset Unit Progress</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== SECTION MASTERY POPUP =====
+function checkSectionMastery(terms){
+  const shown=loadShown();const key=currentUnit.id;
+  for(let i=MASTERY_LEVELS.length-1;i>=1;i--){
+    const level=MASTERY_LEVELS[i];
+    const m=loadMastery();
+    const allAt=terms.every(v=>(m[v.term]||0)>=level.min);
+    if(allAt&&!shown[key+'_'+level.key]){
+      shown[key+'_'+level.key]=true;saveShown(shown);
+      setTimeout(()=>showSectionMastery(level,terms),600);
+      break;
+    }
+  }
+}
+
+function showSectionMastery(level,terms){
+  const overlay=document.getElementById('sectionMasteryOverlay');
+  const m=loadMastery(),total=terms.reduce((s,v)=>s+(m[v.term]||0),0);
+  document.getElementById('sectionMasteryIcon').textContent=level.key==='legendary'?'👑':level.key==='expert'?'🏆':level.key==='confident'?'⭐':level.key==='learning'?'📚':'🎯';
+  document.getElementById('sectionMasteryTitle').textContent=`${currentUnit.shortName}: ${level.name.toUpperCase()} MASTERY!`;
+  document.getElementById('sectionMasteryTitle').style.color=level.color;
+  document.getElementById('sectionMasterySub').innerHTML=`Every term in <span style="color:${currentUnit.color};font-weight:700;">${currentUnit.shortName}</span> has reached<br><span style="color:${level.color};font-weight:900;font-size:1.2rem;">${level.name}</span> level!`;
+  document.getElementById('sectionMasteryStats').innerHTML=`${terms.length} terms · ${total} total correct answers`;
+  const card=overlay.querySelector('.section-mastery-card');
+  card.style.borderColor=level.color+'66';card.style.background=`radial-gradient(ellipse at center,${level.bg} 0%,rgba(10,10,10,0.98) 70%)`;
+  card.style.boxShadow=`0 0 100px ${level.color}44`;
+  const btn=document.getElementById('sectionMasteryDismiss');btn.style.color=level.color;btn.style.borderColor=level.color+'4d';btn.style.background=level.bg;
+  overlay.classList.add('show');
+  for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';p.style.left='50%';p.style.top='50%';p.style.background=level.color;p.style.setProperty('--dx',(Math.random()-.5)*400+'px');p.style.setProperty('--dy',(Math.random()-.5)*400+'px');document.body.appendChild(p);setTimeout(()=>p.remove(),1200);}
+}
+
+// ===== UNIT SELECTOR =====
+function renderUnitSelector(){
+  const c=document.getElementById('quiz-container');
+  const m=loadMastery();
+  c.innerHTML=`<div class="unit-selector-screen">
+    <div class="unit-selector-title">AP HuG Vocab</div>
+    <div class="unit-selector-sub">Select a unit to study</div>
+    <div class="unit-cards">
+      ${UNITS.map(u=>{
+        const done=u.terms.filter(v=>(m[v.term]||0)>=1).length;
+        const pct=Math.round((done/u.terms.length)*100);
+        return `<div class="unit-card" data-unit="${u.id}">
+          <div class="unit-card-left">
+            <span class="unit-card-num" style="color:${u.color}">${u.shortName}</span>
+            <span class="unit-card-name">${u.name.split('—')[1].trim()}</span>
+            <span class="unit-card-count">${u.terms.length} terms · ${pct}% started</span>
+            <div class="unit-card-progress"><div class="unit-card-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${u.color},${u.color}aa);"></div></div>
+          </div>
+          <span class="unit-card-arrow">→</span>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+  document.querySelectorAll('.unit-card').forEach(card=>{
+    card.addEventListener('click',()=>{
+      currentUnit=UNITS.find(u=>u.id===card.dataset.unit);
+      buildQuestions();renderQuiz();
+    });
+  });
+}
+
+// ===== BUILD QUESTIONS =====
+function buildQuestions(){
+  const terms=currentUnit.terms;
+  questions=shuffle([...terms]).map(item=>{
+    const mode=quizMode==='mixed'?(Math.random()<.5?'term2def':'def2term'):quizMode;
+    const wrong3=shuffle(terms.filter(v=>v.term!==item.term)).slice(0,3);
+    let q,a,ch;
+    if(mode==='term2def'){q=item.term;a=item.def;ch=shuffle([item.def,...wrong3.map(w=>w.def)]);}
+    else{q=item.def;a=item.term;ch=shuffle([item.term,...wrong3.map(w=>w.term)]);}
+    return{mode,questionText:q,answer:a,choices:ch,term:item.term,def:item.def,why:item.why};
+  });
+  current=0;score=0;missed=[];
+}
+
+// ===== RENDER QUIZ =====
+function renderQuiz(){
+  const c=document.getElementById('quiz-container');
+  if(current>=questions.length){renderResult(c);return;}
+  const q=questions[current];const pct=Math.round((current/questions.length)*100);
+  const ml=q.mode==='term2def'?'What is the definition of:':'Which term matches this definition?';
+  c.innerHTML=`
+    <div class="quiz-header-row">
+      <h2>AP HuG Vocab</h2>
+      <span class="quiz-unit-badge" style="color:${currentUnit.color};border-color:${currentUnit.color}33;background:${currentUnit.color}11;">${currentUnit.shortName}</span>
+    </div>
+    <div class="quiz-progress">Question ${current+1} of ${questions.length} · Score: ${score}</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    ${getMasteryPanelHTML(currentUnit.terms)}
+    <div class="mode-selector">
+      <button class="mode-btn ${quizMode==='mixed'?'active':''}" data-mode="mixed">🔀 Mixed</button>
+      <button class="mode-btn ${quizMode==='term2def'?'active':''}" data-mode="term2def">Term → Def</button>
+      <button class="mode-btn ${quizMode==='def2term'?'active':''}" data-mode="def2term">Def → Term</button>
+    </div>
+    ${getXPBarHTML(q.term)}
+    <div class="quiz-card">
+      <div class="quiz-question">
+        <span style="color:#444;font-size:.78rem;font-weight:400;">${ml}</span><br><br>
+        <span style="color:${currentUnit.color}">${q.questionText}</span>
+      </div>
+      <div class="choices">${q.choices.map((ch,i)=>`<button class="choice-btn" data-i="${i}">${ch}</button>`).join('')}</div>
+      <div class="quiz-feedback" id="feedback"></div>
+    </div>
+    <button class="next-btn" id="nextBtn">${current+1<questions.length?'Next Question →':'See Results'}</button>`;
+
+  // Events
+  document.querySelectorAll('.choice-btn').forEach(btn=>btn.addEventListener('click',()=>handleChoice(btn,q)));
+  document.getElementById('nextBtn').addEventListener('click',()=>{current++;renderQuiz();});
+  document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{quizMode=btn.dataset.mode;buildQuestions();renderQuiz();}));
+  document.getElementById('masteryPanelHeader').addEventListener('click',()=>{masteryPanelOpen=!masteryPanelOpen;document.getElementById('masteryPanelBody').classList.toggle('open',masteryPanelOpen);document.getElementById('masteryToggleArrow').classList.toggle('open',masteryPanelOpen);});
+  document.getElementById('resetMasteryBtn').addEventListener('click',()=>{if(confirm(`Reset mastery for ${currentUnit.shortName}?`)){resetMasteryForUnit(currentUnit.terms);renderQuiz();}});
+}
+
+// ===== HANDLE CHOICE =====
+function handleChoice(btn,q){
+  const correct=btn.textContent===q.answer;
+  document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.answer)b.classList.add(correct?'correct':'reveal');});
+  if(correct){
+    btn.classList.add('correct');score++;
+    const r=recordCorrect(q.term);
+    if(r.leveled&&r.level.key!=='new'){
+      showToast(q.term, r.level);
+    }
+    document.getElementById('feedback').innerHTML=`<span class="feedback-correct">✓ Correct! ${getMasteryTagHTML(q.term)}</span><span class="feedback-explanation good"><span class="expl-label">💡 Why this is right</span>${q.why}</span>`;
+  }else{
+    btn.classList.add('wrong');missed.push(q);
+    document.getElementById('feedback').innerHTML=`<span class="feedback-wrong">✗ Incorrect</span><span class="feedback-explanation"><span class="expl-label">💡 Here's why</span>${q.why}</span>`;
+  }
+  document.getElementById('nextBtn').style.display='block';
+}
+
+// ===== RESULT =====
+function renderResult(c){
+  const pct=Math.round((score/questions.length)*100);
+  const grade=pct>=90?'🔥 Excellent!':pct>=75?'👍 Good job!':pct>=60?'📚 Keep studying!':'💪 Need more review.';
+  const missedHTML=missed.length?`<div class="missed-list"><h4>Missed Terms (${missed.length})</h4>${missed.map(q=>`<div class="missed-item"><strong>${q.term}</strong>${getMasteryTagHTML(q.term)} — ${q.def}<br><span style="color:#444;font-size:.8rem;">💡 ${q.why}</span></div>`).join('')}</div>`:'<p style="color:#00c864;margin-top:1rem;">🎉 Perfect score!</p>';
+  c.innerHTML=`
+    <div class="quiz-header-row"><h2>AP HuG Vocab</h2><span class="quiz-unit-badge" style="color:${currentUnit.color};border-color:${currentUnit.color}33;background:${currentUnit.color}11;">${currentUnit.shortName}</span></div>
+    ${getMasteryPanelHTML(currentUnit.terms)}
+    <div class="quiz-card quiz-result">
+      <h3>${grade}</h3>
+      <div class="score">${score}/${questions.length}</div>
+      <div class="score-label">${pct}% correct</div>
+      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;">
+        <button class="restart-btn" id="restartBtn">Shuffle & Retake</button>
+        <button class="change-unit-btn" id="changeUnitBtn">← Change Unit</button>
+      </div>
+      ${missedHTML}
+    </div>`;
+  document.getElementById('restartBtn').addEventListener('click',()=>{buildQuestions();renderQuiz();});
+  document.getElementById('changeUnitBtn').addEventListener('click',()=>{currentUnit=null;renderUnitSelector();});
+  document.getElementById('masteryPanelHeader').addEventListener('click',()=>{masteryPanelOpen=!masteryPanelOpen;document.getElementById('masteryPanelBody').classList.toggle('open',masteryPanelOpen);document.getElementById('masteryToggleArrow').classList.toggle('open',masteryPanelOpen);});
+  document.getElementById('resetMasteryBtn').addEventListener('click',()=>{if(confirm(`Reset mastery for ${currentUnit.shortName}?`)){resetMasteryForUnit(currentUnit.terms);renderResult(c);}});
+  checkSectionMastery(currentUnit.terms);
+}
+
+// ===== POPUP EVENTS =====
+document.getElementById('sectionMasteryDismiss').addEventListener('click',()=>document.getElementById('sectionMasteryOverlay').classList.remove('show'));
+document.getElementById('sectionMasteryOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.classList.remove('show');});
+document.getElementById('levelupDismiss').addEventListener('click',()=>document.getElementById('levelupOverlay').classList.remove('show'));
+document.getElementById('levelupOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.classList.remove('show');});
+
+// ===== TOAST =====
+let toastTimeout=null;
+function showToast(term,level){
+  let toast=document.getElementById('masteryToast');
+  if(!toast){
+    toast=document.createElement('div');toast.id='masteryToast';
+    toast.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;background:rgba(10,10,10,0.95);border:1.5px solid;border-radius:12px;padding:.6rem 1rem;display:flex;align-items:center;gap:.6rem;font-size:.8rem;font-weight:700;z-index:1500;transform:translateY(20px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;backdrop-filter:blur(12px);max-width:220px;';
+    document.body.appendChild(toast);
+  }
+  const icon=level.key==='legendary'?'👑':level.key==='expert'?'🏆':level.key==='confident'?'⭐':level.key==='learning'?'📚':'🎯';
+  toast.style.borderColor=level.color+'66';
+  toast.style.boxShadow=`0 4px 20px ${level.color}33`;
+  toast.innerHTML=`<span style="font-size:1.1rem">${icon}</span><div><div style="color:${level.color};font-size:.75rem;">${level.name}!</div><div style="color:#888;font-size:.68rem;font-weight:500;margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;">${term}</div></div>`;
+  toast.style.transform='translateY(0)';toast.style.opacity='1';
+  if(toastTimeout)clearTimeout(toastTimeout);
+  toastTimeout=setTimeout(()=>{toast.style.transform='translateY(20px)';toast.style.opacity='0';},2500);
+}
+
+// ===== INIT =====
+renderUnitSelector();
+</script>
+</body>
+</html>

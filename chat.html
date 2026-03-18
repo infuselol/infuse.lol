@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Chat — Infuse.lol</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+body{overflow:hidden;}
+.page-content{align-items:flex-start;justify-content:center;padding:.5rem;height:calc(100vh - 50px);overflow:hidden;}
+.chat-container{width:100%;max-width:500px;height:100%;display:flex;flex-direction:column;background:rgba(255,255,255,.01);border:1.5px solid rgba(255,51,51,.15);border-radius:16px;overflow:hidden;}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.2rem;border-bottom:1px solid rgba(255,51,51,.1);background:rgba(255,51,51,.03);}
+.chat-title{font-size:1rem;font-weight:800;color:#ff3333;}
+.chat-online{font-size:.7rem;font-weight:700;color:#00c864;background:rgba(0,200,100,.1);border:1px solid rgba(0,200,100,.2);padding:.2rem .6rem;border-radius:20px;text-transform:uppercase;letter-spacing:.05em;animation:livePulse 2s ease-in-out infinite;}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.5}}
+.chat-username-bar{display:flex;align-items:center;gap:.4rem;padding:.5rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.03);background:rgba(255,255,255,.01);}
+.chat-username-label{font-size:.7rem;color:#444;}
+.chat-username-display{font-size:.75rem;font-weight:700;color:#ff3333;}
+.chat-username-edit{background:none;border:none;cursor:pointer;font-size:.7rem;padding:.1rem .3rem;border-radius:4px;transition:background .2s;}
+.chat-username-edit:hover{background:rgba(255,51,51,.1);}
+.chat-messages{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.4rem;scrollbar-width:thin;scrollbar-color:#222 transparent;}
+.chat-messages::-webkit-scrollbar{width:4px;}
+.chat-messages::-webkit-scrollbar-track{background:transparent;}
+.chat-messages::-webkit-scrollbar-thumb{background:#222;border-radius:4px;}
+.chat-loading,.chat-empty{color:#333;font-size:.8rem;text-align:center;padding:2rem;font-style:italic;}
+.chat-msg{display:flex;flex-direction:column;gap:.15rem;padding:.5rem .7rem;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);animation:chatFadeIn .3s ease;word-wrap:break-word;overflow-wrap:break-word;}
+.chat-msg.self{background:rgba(255,51,51,.06);border-color:rgba(255,51,51,.12);}
+@keyframes chatFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg-header{display:flex;align-items:center;gap:.4rem;}
+.chat-msg-name{font-size:.72rem;font-weight:800;color:#ff3333;}
+.chat-msg.self .chat-msg-name{color:#ff6655;}
+.chat-msg-time{font-size:.6rem;color:#333;}
+.chat-msg-text{font-size:.82rem;color:#ccc;line-height:1.4;}
+.chat-input-bar{display:flex;gap:.5rem;padding:.7rem;border-top:1px solid rgba(255,51,51,.1);background:rgba(0,0,0,.3);}
+#chatInput{flex:1;padding:.6rem .9rem;border-radius:10px;border:1.5px solid rgba(255,51,51,.2);background:rgba(255,255,255,.03);color:#fff;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+#chatInput:focus{border-color:#ff3333;box-shadow:0 0 15px rgba(255,51,51,.15);}
+#chatInput::placeholder{color:#333;}
+.chat-send-btn{width:40px;height:40px;border-radius:10px;border:none;background:#ff3333;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.chat-send-btn:hover{background:#e02020;transform:scale(1.05);}
+.chat-send-btn:disabled{background:#222;cursor:default;transform:none;}
+@media(max-width:768px){.chat-container{border-radius:12px;}.chat-msg-text{font-size:.8rem;}.chat-title{font-size:.9rem;}}
+</style>
+</head>
+<body>
+<nav class="tab-bar">
+  <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg><span class="tab-title">Home</span></a>
+  <a class="tab" href="/amongus"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg><span class="tab-title">Among Us</span></a>
+  <a class="tab" href="/vocab3"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-title">Unit 3 Vocab</span></a>
+  <a class="tab active" href="/chat"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg><span class="tab-title">Chat</span></a>
+  <a class="tab" href="/flappy"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/><path d="M6 7l-2-3 1-1 3 2z" fill="#ff3333" opacity=".7"/><path d="M8 5l-1-3 1.5-.5 1.5 3z" fill="#ff3333" opacity=".5"/></svg><span class="tab-title">Flappy Bird</span></a>
+</nav>
+
+<div class="page-content">
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2 class="chat-title">💬 Global Chat</h2>
+      <div class="chat-online">Live</div>
+    </div>
+    <div class="chat-username-bar">
+      <span class="chat-username-label">Chatting as:</span>
+      <span class="chat-username-display" id="chatUsernameDisplay">Anonymous</span>
+      <button class="chat-username-edit" id="chatUsernameEdit">✏️</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-loading">Loading messages...</div>
+    </div>
+    <div class="chat-input-bar">
+      <input type="text" id="chatInput" placeholder="Type a message..." maxlength="200" autocomplete="off" spellcheck="false">
+      <button id="chatSend" class="chat-send-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="#fff"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL='https://uguiffclchydslwtadjh.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVndWlmZmNsY2h5ZHNsd3RhZGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNjI2MTksImV4cCI6MjA4NzczODYxOX0.S9wvKy1I2gjLSXsFs4_3PuYFh4AJexYoc3DjynOGFd4';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const BLOCKED_WORDS=['fuck','shit','ass','bitch','dick','cock','pussy','cunt','fag','faggot','nigger','nigga','nig','retard','retarded','whore','slut','bastard','damn','penis','vagina','tits','boob','boobs','titties','anus','dildo','porn','hentai','cum','jizz','wank','twat','prick','motherfucker','nazi','hitler','rape','molest','pedo','pedophile','sex','horny','erect','blowjob','handjob','rimjob','nlgger','diddy','heatler','ballsack','anal','oral','orgasm','ejaculate','masturbat','fetish','bondage','bdsm','thot','simp','incel','chink','spic','wetback','beaner','kike','gook','coon','cracker','tranny','dyke','homo','lesbo','queer'];
+const LEET_MAP={'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','@':'a','$':'s','!':'i'};
+function cleanLeet(s){let r='';for(const c of s)r+=LEET_MAP[c.toLowerCase()]||c.toLowerCase();return r;}
+function isInappropriate(n){if(!n||!n.trim())return true;const l=n.toLowerCase().replace(/[^a-z0-9@$!]/g,'');const lc=cleanLeet(l);for(const w of BLOCKED_WORDS){if(l.includes(w)||lc.includes(w))return true;}if(/^(.)\1+$/.test(n.trim()))return true;if(n.trim().length<2)return true;return false;}
+
+const CHAT_USERNAME_KEY='infuse_chat_username';
+let chatUsername=localStorage.getItem(CHAT_USERNAME_KEY)||'';
+if(!chatUsername){chatUsername='Anon'+Math.floor(Math.random()*9999);localStorage.setItem(CHAT_USERNAME_KEY,chatUsername);}
+document.getElementById('chatUsernameDisplay').textContent=chatUsername;
+
+document.getElementById('chatUsernameEdit').addEventListener('click',()=>{
+  const n=prompt('Enter your chat username (max 15 chars):','');
+  if(!n||!n.trim())return;
+  const t=n.trim().substring(0,15);
+  if(isInappropriate(t)){alert('That username is not allowed.');return;}
+  chatUsername=t;localStorage.setItem(CHAT_USERNAME_KEY,chatUsername);document.getElementById('chatUsernameDisplay').textContent=chatUsername;
+});
+
+function escHtml(t){const d=document.createElement('div');d.appendChild(document.createTextNode(t));return d.innerHTML;}
+function fmtTime(ts){const d=new Date(ts),now=new Date(),diff=now-d;if(diff<60000)return'just now';if(diff<3600000)return Math.floor(diff/60000)+'m ago';if(diff<86400000)return Math.floor(diff/3600000)+'h ago';return d.toLocaleDateString();}
+
+function appendMessage(msg){
+  const msgs=document.getElementById('chatMessages');
+  msgs.querySelector('.chat-empty')?.remove();msgs.querySelector('.chat-loading')?.remove();
+  const isSelf=msg.username===chatUsername;
+  const div=document.createElement('div');div.className='chat-msg '+(isSelf?'self':'');
+  div.innerHTML=`<div class="chat-msg-header"><span class="chat-msg-name">${escHtml(msg.username)}</span><span class="chat-msg-time">${fmtTime(msg.created_at)}</span></div><div class="chat-msg-text">${escHtml(msg.message)}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function loadMessages(){
+  document.getElementById('chatMessages').innerHTML='<div class="chat-loading">Loading messages...</div>';
+  try{
+    const{data,error}=await sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(100);
+    if(error)throw error;
+    const msgs=document.getElementById('chatMessages');msgs.innerHTML='';
+    if(!data||!data.length){msgs.innerHTML='<div class="chat-empty">No messages yet. Say hello! 👋</div>';return;}
+    data.forEach(m=>appendMessage(m));
+  }catch(err){document.getElementById('chatMessages').innerHTML='<div class="chat-loading">Could not load messages</div>';}
+}
+
+async function sendMessage(){
+  const inp=document.getElementById('chatInput');const text=inp.value.trim();
+  if(!text||text.length>200)return;
+  if(isInappropriate(text)){inp.value='';inp.placeholder='Message blocked!';inp.style.borderColor='#ff0000';setTimeout(()=>{inp.placeholder='Type a message...';inp.style.borderColor='rgba(255,51,51,0.2)';},2000);return;}
+  const btn=document.getElementById('chatSend');btn.disabled=true;inp.disabled=true;
+  try{const{error}=await sb.from('chat_messages').insert([{username:chatUsername,message:text}]);if(error)throw error;inp.value='';}catch(e){}
+  btn.disabled=false;inp.disabled=false;inp.focus();
+}
+
+document.getElementById('chatSend').addEventListener('click',sendMessage);
+document.getElementById('chatInput').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();sendMessage();}});
+
+sb.channel('chat-room').on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},p=>appendMessage(p.new)).subscribe();
+loadMessages();
+</script>
+</body>
+</html>

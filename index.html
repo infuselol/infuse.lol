@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Infuse.lol</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.logo{font-size:7rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:1rem;}
+.infuse{color:#ff3333;text-shadow:0 0 10px rgba(255,51,51,0.4),0 0 30px rgba(255,51,51,0.15);transition:all .3s;cursor:pointer;display:inline-block;}
+.infuse:hover{transform:translateY(-8px) scale(1.08);text-shadow:0 0 20px rgba(255,51,51,0.6),0 0 40px rgba(255,51,51,0.3);}
+.lol{color:#fff;text-shadow:0 0 10px rgba(255,255,255,0.2);transition:all .3s;cursor:pointer;display:inline-block;}
+.lol:hover{transform:translateY(-8px) scale(1.08);}
+.clock-wrapper{margin-bottom:2rem;display:flex;flex-direction:column;align-items:center;}
+.clock-time{font-family:'JetBrains Mono',monospace;font-size:3.2rem;font-weight:700;color:#fff;letter-spacing:0.04em;background:linear-gradient(180deg,#fff 0%,#aaa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,51,51,0.2));}
+.clock-time .clock-colon{color:#ff3333;-webkit-text-fill-color:#ff3333;opacity:.6;}
+.clock-time .clock-seconds{-webkit-text-fill-color:#ff3333;font-size:2.2rem;opacity:.7;}
+.clock-time .clock-ampm{-webkit-text-fill-color:#ff3333;font-size:1.1rem;margin-left:.4rem;font-weight:500;opacity:.8;}
+.clock-date{font-size:.82rem;color:#444;margin-top:.4rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;}
+.clock-label{font-size:.65rem;color:#2a2a2a;margin-top:.2rem;letter-spacing:.2em;text-transform:uppercase;}
+.socials-box{background:rgba(255,255,255,.02);border:1.5px solid rgba(255,51,51,.15);border-radius:16px;width:340px;height:100px;overflow:hidden;box-shadow:0 0 40px rgba(255,51,51,.06);backdrop-filter:blur(10px);margin-top:1.5rem;scrollbar-width:none;}
+.socials-box::-webkit-scrollbar{display:none;}
+.socials-scroll{display:flex;flex-direction:column;animation:scroll 10s linear infinite;pointer-events:none;}
+.social-item{pointer-events:auto;}
+.socials-scroll.paused{animation-play-state:paused;}
+@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(-300px)}}
+.social-item{display:flex;align-items:center;justify-content:center;gap:.75rem;padding:1.6rem 2rem;min-height:100px;transition:all .3s;cursor:pointer;}
+.social-item:hover{background:rgba(255,51,51,.08);}
+.social-icon{width:22px;height:22px;flex-shrink:0;}
+.social-text{color:#999;font-size:.92rem;font-weight:500;}
+@media(max-width:768px){.logo{font-size:3.5rem;}.clock-time{font-size:2rem;}.clock-time .clock-seconds{font-size:1.2rem;}.clock-time .clock-ampm{font-size:.9rem;}.socials-box{width:90vw;max-width:340px;}}
+@media(max-width:400px){.logo{font-size:2.8rem;}.clock-time{font-size:1.6rem;}.clock-time .clock-seconds{font-size:1rem;}}
+</style>
+</head>
+<body>
+<nav class="tab-bar">
+  <a class="tab active" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg><span class="tab-title">Home</span></a>
+  <a class="tab" href="/amongus"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg><span class="tab-title">Among Us</span></a>
+  <a class="tab" href="/vocab3"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-title">AP HuG Vocab</span></a>
+  <a class="tab" href="/chat"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg><span class="tab-title">Chat</span></a>
+  <a class="tab" href="/flappy"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/><path d="M6 7l-2-3 1-1 3 2z" fill="#ff3333" opacity=".7"/><path d="M8 5l-1-3 1.5-.5 1.5 3z" fill="#ff3333" opacity=".5"/></svg><span class="tab-title">Flappy Bird</span></a>
+</nav>
+
+<div class="page-content" style="flex-direction:column;align-items:center;justify-content:center;">
+  <div class="clock-wrapper">
+    <div class="clock-time" id="clockTime"></div>
+    <div class="clock-date" id="clockDate"></div>
+    <div class="clock-label">Eastern Standard Time</div>
+  </div>
+  <h1 class="logo"><span class="infuse">Infuse</span><span class="lol">.lol</span></h1>
+  <div class="socials-box">
+    <div class="socials-scroll" id="socialsScroll">
+      <div class="social-item">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 7.8c-.15 2.58-.8 6.42-1.13 8.19-.14.75-.42 1-.68 1.02-.58.05-1.02-.39-1.58-.77-.88-.59-1.38-.97-2.23-1.55-.99-.68-.35-1.07.22-1.66.15-.15 2.79-2.53 2.84-2.76.01-.03.01-.14-.05-.19-.06-.05-.14-.03-.2-.02-.08.02-1.36.9-3.86 2.66-.35.25-.67.37-.95.36-.31-.01-.9-.18-1.35-.33-.55-.18-.98-.28-.95-.58.02-.16.25-.32.69-.49 2.69-1.15 4.52-1.91 5.6-2.28 2.55-1.04 3.07-1.23 3.42-1.23.07 0 .24.02.35.11.09.07.12.17.13.25z" fill="#ff3333"/></svg>
+        <span class="social-text">@infuselol</span>
+      </div>
+      <div class="social-item">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" fill="#ff3333"/></svg>
+        <span class="social-text">@infuselol</span>
+      </div>
+      <div class="social-item">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#ff3333"/></svg>
+        <span class="social-text">infuse@infuse.lol</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="copy-notification" id="copyNotification">Copied to clipboard!</div>
+
+<script>
+// Clock
+function updateClock(){
+  const now=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
+  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  const ampm=h>=12?'PM':'AM';h=h%12||12;
+  document.getElementById('clockTime').innerHTML=`${h}<span class="clock-colon">:</span>${String(m).padStart(2,'0')}<span class="clock-seconds">:${String(s).padStart(2,'0')}</span><span class="clock-ampm">${ampm}</span>`;
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('clockDate').textContent=`${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+}
+updateClock();setInterval(updateClock,1000);
+
+// Socials scroll + copy
+const scroll=document.getElementById('socialsScroll');
+document.querySelectorAll('.social-item').forEach(item=>scroll.appendChild(item.cloneNode(true)));
+document.querySelectorAll('.social-item').forEach(item=>{
+  item.addEventListener('pointerdown',e=>{
+    e.preventDefault();e.stopPropagation();
+    const text=item.querySelector('.social-text').textContent;
+    const copy=()=>{const n=document.getElementById('copyNotification');n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2000);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(copy);}
+    else{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');copy();}catch(e){}document.body.removeChild(ta);}
+  });
+});
+</script>
+</body>
+</html>
