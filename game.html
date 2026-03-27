@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FNAE — Infuse.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="stylesheet" href="shared.css">
+<style>
+body{overflow:hidden;}
+.page-content{padding:0;height:calc(100vh - 50px);align-items:stretch;justify-content:stretch;}
+.game-wrapper{width:100%;height:100%;position:relative;background:#000;}
+#game-iframe{width:100%;height:100%;border:none;display:block;}
+
+/* Loading screen */
+.game-loading{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;z-index:10;transition:opacity .5s;}
+.game-loading.hidden{opacity:0;pointer-events:none;}
+.game-loading-title{font-size:2rem;font-weight:900;color:#ff0000;font-family:'Courier New',monospace;text-shadow:0 0 20px rgba(255,0,0,0.5);letter-spacing:.1em;}
+.game-loading-sub{font-size:.85rem;color:#444;font-family:'Courier New',monospace;letter-spacing:.2em;}
+.game-loading-spinner{display:flex;gap:.5rem;}
+.game-loading-spinner span{width:8px;height:8px;border-radius:50%;background:#ff0000;animation:dotPulse 1.2s ease-in-out infinite;}
+.game-loading-spinner span:nth-child(2){animation-delay:.2s;}
+.game-loading-spinner span:nth-child(3){animation-delay:.4s;}
+@keyframes dotPulse{0%,80%,100%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
+
+/* Fullscreen button */
+.fullscreen-btn{position:absolute;top:.75rem;right:.75rem;background:rgba(0,0,0,.7);border:1px solid rgba(255,51,51,.3);color:#ff3333;padding:.4rem .8rem;border-radius:6px;font-size:.7rem;font-weight:700;cursor:pointer;z-index:20;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.05em;}
+.fullscreen-btn:hover{background:rgba(255,51,51,.15);border-color:rgba(255,51,51,.6);}
+</style>
+</head>
+<body>
+<nav class="tab-bar">
+  <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg><span class="tab-title">Home</span></a>
+  <a class="tab" href="/amongus"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg><span class="tab-title">Among Us</span></a>
+  <a class="tab" href="/vocab3"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-title">AP HuG Vocab</span></a>
+  <a class="tab" href="/chat"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg><span class="tab-title">Chat</span></a>
+  <a class="tab" href="/flappy"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/></svg><span class="tab-title">Flappy Bird</span></a>
+  <a class="tab active" href="/game"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5S17.67 12 18.5 12s1.5.67 1.5 1.5S19.33 15 18.5 15zm3-3c-.83 0-1.5-.67-1.5-1.5S20.67 10 21.5 10s1.5.67 1.5 1.5S22.33 12 21.5 12z" fill="#ff3333"/></svg><span class="tab-title">FNAE</span></a>
+</nav>
+
+<div class="page-content">
+  <div class="game-wrapper">
+    <div class="game-loading" id="gameLoading">
+      <div class="game-loading-title">FIVE NIGHTS AT EPSTEIN'S</div>
+      <div class="game-loading-spinner"><span></span><span></span><span></span></div>
+      <div class="game-loading-sub">LOADING...</div>
+    </div>
+    <button class="fullscreen-btn" id="fullscreenBtn">⛶ FULLSCREEN</button>
+    <iframe
+      id="game-iframe"
+      src="/game/index.html"
+      allowfullscreen
+      allow="autoplay; fullscreen"
+      title="Five Nights at Epstein's"
+    ></iframe>
+  </div>
+</div>
+
+<script>
+const iframe=document.getElementById('game-iframe');
+const loading=document.getElementById('gameLoading');
+const fsBtn=document.getElementById('fullscreenBtn');
+
+iframe.addEventListener('load',()=>{
+  setTimeout(()=>loading.classList.add('hidden'),800);
+  // Pass click event to iframe for audio autoplay
+  try{iframe.contentWindow.postMessage({type:'USER_CLICKED_PLAY'},'*');}catch(e){}
+});
+
+fsBtn.addEventListener('click',()=>{
+  const wrapper=document.querySelector('.game-wrapper');
+  if(document.fullscreenElement){
+    document.exitFullscreen();
+    fsBtn.textContent='⛶ FULLSCREEN';
+  }else{
+    wrapper.requestFullscreen().then(()=>{
+      fsBtn.textContent='✕ EXIT';
+    }).catch(e=>console.log('Fullscreen failed:',e));
+  }
+});
+
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement) fsBtn.textContent='⛶ FULLSCREEN';
+});
+</script>
+</body>
+</html>
