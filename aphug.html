@@ -1,4 +1,149 @@
-<div class="page-content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AP HuG Models — Infuse.lol</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* =============================================
+   AP HUMAN GEOGRAPHY GUIDE
+   ============================================= */
+.aphug{max-width:900px;margin:0 auto;padding:2rem 0 4rem;width:100%;}
+
+/* --- Hero --- */
+.aphug-hero{text-align:center;padding:3rem 1rem 2.5rem;margin-bottom:2.5rem;position:relative;}
+.aphug-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,51,51,0.12) 0%,transparent 70%);pointer-events:none;border-radius:1.5rem;}
+.aphug-tag{display:inline-block;background:rgba(255,51,51,0.08);border:1px solid rgba(255,51,51,0.3);color:#ff5544;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .9rem;border-radius:999px;margin-bottom:1.1rem;}
+.aphug-hero h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;letter-spacing:-.03em;background:linear-gradient(135deg,#fff 30%,#ff5544 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:.8rem;}
+.aphug-hero p{color:#555;font-size:.97rem;max-width:580px;margin:0 auto 1.5rem;}
+.aphug-frq-rule{display:inline-flex;align-items:flex-start;gap:.7rem;background:rgba(255,51,51,0.07);border:1px solid rgba(255,51,51,0.25);border-radius:.9rem;padding:.9rem 1.3rem;text-align:left;font-size:.9rem;max-width:560px;margin:0 auto;}
+.aphug-frq-rule .icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.aphug-frq-rule strong{color:#ff5544;}
+
+/* --- Section headers --- */
+.aphug-section{display:flex;align-items:center;gap:.7rem;margin:2.8rem 0 1.2rem;}
+.aphug-section h2{font-size:1.18rem;font-weight:800;letter-spacing:-.01em;color:#fff;white-space:nowrap;}
+.aphug-pill{background:rgba(255,51,51,0.08);border:1px solid rgba(255,51,51,0.25);color:#ff5544;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .65rem;border-radius:999px;white-space:nowrap;}
+.aphug-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,51,51,0.2),transparent);}
+
+/* --- Table --- */
+.aphug-table-wrap{overflow-x:auto;border-radius:1rem;border:1px solid #1a1a1a;background:#0f0f0f;}
+.aphug-table-wrap table{width:100%;border-collapse:collapse;font-size:.855rem;}
+.aphug-table-wrap thead{background:#141414;border-bottom:1px solid #1a1a1a;}
+.aphug-table-wrap th{padding:.8rem 1rem;text-align:left;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;white-space:nowrap;}
+.aphug-table-wrap td{padding:.72rem 1rem;vertical-align:top;border-bottom:1px solid #141414;line-height:1.55;}
+.aphug-table-wrap tr:last-child td{border-bottom:none;}
+.aphug-table-wrap tr:hover td{background:rgba(255,51,51,0.03);}
+.aphug-table-wrap td:first-child{font-weight:800;color:#ff5544;width:36px;text-align:center;}
+.aphug-table-wrap td:nth-child(2){font-weight:700;color:#fff;min-width:200px;}
+.aphug-table-wrap td:nth-child(3){color:#555;min-width:200px;}
+.aphug-table-wrap td:nth-child(4){color:#ccc;min-width:220px;}
+
+/* --- Workflow --- */
+.aphug-workflow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;}
+.aphug-step{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.9rem;padding:1rem 1.1rem;display:flex;gap:.8rem;align-items:flex-start;transition:border-color .2s;}
+.aphug-step:hover{border-color:rgba(255,51,51,0.3);}
+.aphug-step-num{background:rgba(255,51,51,0.08);border:1px solid rgba(255,51,51,0.25);color:#ff5544;font-weight:800;font-size:.8rem;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.aphug-step h4{font-size:.85rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.aphug-step p{font-size:.8rem;color:#555;}
+.aphug-step ul{font-size:.8rem;color:#555;padding-left:1rem;}
+.aphug-step li{margin-bottom:.15rem;}
+
+/* --- Formulas --- */
+.aphug-formulas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.8rem;}
+.aphug-formula{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.9rem;padding:1.2rem 1.2rem 1rem;transition:border-color .2s,box-shadow .2s;}
+.aphug-formula:hover{border-color:rgba(255,51,51,0.3);box-shadow:0 0 18px rgba(255,51,51,0.06);}
+.aphug-formula-name{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ff5544;margin-bottom:.5rem;}
+.aphug-formula-eq{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:#fff;background:#141414;border:1px solid #1a1a1a;border-radius:.5rem;padding:.5rem .9rem;margin-bottom:.6rem;display:inline-block;}
+.aphug-formula-when{font-size:.8rem;color:#555;}
+.aphug-formula-when strong{color:#ccc;}
+
+/* --- Urban models --- */
+.aphug-models{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem;}
+.aphug-model{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.9rem;padding:1.1rem 1.2rem;transition:border-color .2s;}
+.aphug-model:hover{border-color:rgba(255,51,51,0.3);}
+.aphug-model-tag{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;margin-bottom:.35rem;}
+.aphug-model h4{font-size:.93rem;font-weight:800;color:#fff;margin-bottom:.45rem;}
+.aphug-model p{font-size:.82rem;color:#555;line-height:1.5;}
+.aphug-zones{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.55rem;}
+.aphug-chip{font-size:.7rem;font-weight:600;padding:.18rem .55rem;border-radius:999px;background:#141414;border:1px solid #1a1a1a;color:#ccc;}
+
+/* --- DTM/ETM stages --- */
+.aphug-stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;}
+.aphug-stage{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.9rem;padding:.9rem 1rem;text-align:center;transition:border-color .2s;}
+.aphug-stage:hover{border-color:rgba(255,51,51,0.25);}
+.aphug-stage-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ff5544;margin-bottom:.25rem;}
+.aphug-stage h4{font-size:.85rem;font-weight:800;color:#fff;margin-bottom:.35rem;}
+.aphug-stage p{font-size:.78rem;color:#555;}
+
+/* --- Worked examples --- */
+.aphug-examples{display:flex;flex-direction:column;gap:.8rem;}
+.aphug-example{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.9rem;overflow:hidden;transition:border-color .2s;}
+.aphug-example:hover{border-color:rgba(255,51,51,0.25);}
+.aphug-example-head{background:#141414;padding:.75rem 1.2rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid #1a1a1a;}
+.aphug-example-head h4{font-size:.9rem;font-weight:800;color:#fff;}
+.aphug-ex-badge{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,51,51,0.08);border:1px solid rgba(255,51,51,0.25);color:#ff5544;padding:.18rem .55rem;border-radius:999px;}
+.aphug-example-body{padding:1rem 1.2rem;}
+.aphug-ex-row{display:flex;gap:.6rem;margin-bottom:.5rem;align-items:flex-start;}
+.aphug-ex-row:last-child{margin-bottom:0;}
+.aphug-ex-label{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;min-width:60px;padding-top:.15rem;flex-shrink:0;}
+.aphug-ex-label.apply{color:#4ade80;}
+.aphug-ex-label.limit{color:#f87171;}
+.aphug-ex-label.setup{color:#60a5fa;}
+.aphug-ex-label.insight{color:#fbbf24;}
+.aphug-ex-row p{font-size:.84rem;color:#555;}
+.aphug-ex-row p strong{color:#ccc;}
+
+/* --- Mistakes --- */
+.aphug-mistakes{display:flex;flex-direction:column;gap:.7rem;}
+.aphug-mistake{background:#0f0f0f;border:1px solid #1a1a1a;border-left:3px solid #f87171;border-radius:.9rem;padding:1rem 1.2rem;}
+.aphug-mistake h4{font-size:.9rem;font-weight:800;color:#fff;margin-bottom:.35rem;}
+.aphug-mistake-row{display:flex;gap:.5rem;margin-bottom:.25rem;align-items:flex-start;}
+.aphug-mistake-row:last-child{margin-bottom:0;}
+.aphug-mlabel{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;min-width:54px;padding-top:.1rem;flex-shrink:0;}
+.aphug-mlabel.why{color:#f87171;}
+.aphug-mlabel.fix{color:#4ade80;}
+.aphug-mistake-row p{font-size:.83rem;color:#555;}
+
+/* --- Mnemonics --- */
+.aphug-mnemonics{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.7rem;}
+.aphug-mnemonic{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.9rem;padding:1rem 1.1rem;transition:border-color .2s;}
+.aphug-mnemonic:hover{border-color:rgba(255,51,51,0.25);}
+.aphug-mnemonic-trick{font-size:.85rem;font-weight:800;color:#ff5544;margin-bottom:.3rem;}
+.aphug-mnemonic-helps{font-size:.8rem;color:#ccc;margin-bottom:.2rem;}
+.aphug-mnemonic-when{font-size:.78rem;color:#555;}
+
+/* --- Checklist --- */
+.aphug-checklist{display:flex;flex-direction:column;gap:.5rem;}
+.aphug-check{display:flex;align-items:flex-start;gap:.7rem;background:#0f0f0f;border:1px solid #1a1a1a;border-radius:.75rem;padding:.75rem 1rem;font-size:.87rem;}
+.aphug-check-icon{color:#ff5544;font-size:1rem;flex-shrink:0;margin-top:1px;}
+.aphug-check strong{color:#fff;}
+
+/* --- Mobile --- */
+@media(max-width:600px){
+  .aphug-table-wrap table{font-size:.78rem;}
+  .aphug-table-wrap th,.aphug-table-wrap td{padding:.6rem .7rem;}
+  .aphug-table-wrap td:nth-child(2){min-width:120px;}
+  .aphug-formula-eq{font-size:.88rem;}
+  .aphug-section h2{font-size:1rem;}
+}
+</style>
+</head>
+<body>
+
+<nav class="tab-bar">
+  <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg><span class="tab-title">Home</span></a>
+  <a class="tab" href="/amongus"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg><span class="tab-title">Among Us</span></a>
+  <a class="tab active" href="/aphug"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/></svg><span class="tab-title">AP HuG Models</span></a>
+  <a class="tab" href="/vocab3"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-title">AP HuG Vocab</span></a>
+  <a class="tab" href="/chat"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg><span class="tab-title">Chat</span></a>
+  <a class="tab" href="/flappy"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/><path d="M6 7l-2-3 1-1 3 2z" fill="#ff3333" opacity=".7"/><path d="M8 5l-1-3 1.5-.5 1.5 3z" fill="#ff3333" opacity=".5"/></svg><span class="tab-title">Flappy Bird</span></a>
+</nav>
+
+<div class="page-content" style="align-items:flex-start;justify-content:center;">
 <div class="aphug">
 
   <!-- HERO -->
@@ -110,7 +255,7 @@
     <div class="aphug-formula">
       <div class="aphug-formula-name">Gravity Model</div>
       <div class="aphug-formula-eq">I = (P₁ × P₂) / d²</div>
-      <div class="aphug-formula-when"><strong>Use when:</strong> Comparing likely interaction between two places. Bigger populations → more interaction; distance reduces it (exponent may vary).</div>
+      <div class="aphug-formula-when"><strong>Use when:</strong> Comparing likely interaction between two places. Bigger populations → more interaction; distance reduces it.</div>
     </div>
     <div class="aphug-formula">
       <div class="aphug-formula-name">Rank-Size Rule</div>
@@ -120,7 +265,7 @@
     <div class="aphug-formula">
       <div class="aphug-formula-name">Dependency Ratio</div>
       <div class="aphug-formula-eq">DR = [(0–14) + (65+)] / (15–64) × 100</div>
-      <div class="aphug-formula-when"><strong>Use when:</strong> Measuring pressure on working-age population. High DR can come from a youth bulge or an aging population.</div>
+      <div class="aphug-formula-when"><strong>Use when:</strong> Measuring pressure on working-age population. High DR can come from a youth bulge or aging population.</div>
     </div>
   </div>
 
@@ -182,31 +327,11 @@
     <div class="aphug-line"></div>
   </div>
   <div class="aphug-stages">
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 1</div>
-      <h4>High / High</h4>
-      <p>High CBR, high CDR. Little to no net growth.</p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 2</div>
-      <h4>CDR Drops Fast</h4>
-      <p>Sanitation/medicine causes CDR to plummet → <strong>population boom.</strong></p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 3</div>
-      <h4>CBR Starts Falling</h4>
-      <p>Urbanization, contraception, and women's education cause CBR to drop.</p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 4</div>
-      <h4>Low / Low</h4>
-      <p>Both CBR and CDR are low. Stable or very slow growth.</p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 5</div>
-      <h4>Natural Decrease</h4>
-      <p>CBR falls below CDR. <strong>Aging population,</strong> population shrinks.</p>
-    </div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 1</div><h4>High / High</h4><p>High CBR, high CDR. Little to no net growth.</p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 2</div><h4>CDR Drops Fast</h4><p>Sanitation/medicine causes CDR to plummet → <strong>population boom.</strong></p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 3</div><h4>CBR Starts Falling</h4><p>Urbanization, contraception, and women's education cause CBR to drop.</p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 4</div><h4>Low / Low</h4><p>Both CBR and CDR are low. Stable or very slow growth.</p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 5</div><h4>Natural Decrease</h4><p>CBR falls below CDR. <strong>Aging population,</strong> population shrinks.</p></div>
   </div>
 
   <!-- ETM STAGES -->
@@ -216,26 +341,10 @@
     <div class="aphug-line"></div>
   </div>
   <div class="aphug-stages">
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 1</div>
-      <h4>Pestilence & Famine</h4>
-      <p>Infectious disease and famine dominate mortality.</p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 2</div>
-      <h4>Receding Pandemics</h4>
-      <p>Improved medicine and sanitation reduce infectious disease deaths.</p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 3</div>
-      <h4>Degenerative Disease</h4>
-      <p>Heart disease, cancer, and chronic illness become the dominant causes of death.</p>
-    </div>
-    <div class="aphug-stage">
-      <div class="aphug-stage-label">Stage 4/5</div>
-      <h4>Delayed + Re-emerging</h4>
-      <p>Delayed degenerative diseases plus <strong>re-emerging infections</strong> (e.g., antibiotic resistance).</p>
-    </div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 1</div><h4>Pestilence & Famine</h4><p>Infectious disease and famine dominate mortality.</p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 2</div><h4>Receding Pandemics</h4><p>Improved medicine and sanitation reduce infectious disease deaths.</p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 3</div><h4>Degenerative Disease</h4><p>Heart disease, cancer, and chronic illness become dominant causes of death.</p></div>
+    <div class="aphug-stage"><div class="aphug-stage-label">Stage 4/5</div><h4>Delayed + Re-emerging</h4><p>Delayed degenerative diseases plus <strong>re-emerging infections</strong> (e.g., antibiotic resistance).</p></div>
   </div>
 
   <!-- WORKED EXAMPLES -->
@@ -248,7 +357,7 @@
     <div class="aphug-example">
       <div class="aphug-example-head"><span class="aphug-ex-badge">Model</span><h4>von Thünen — Agricultural Rings</h4></div>
       <div class="aphug-example-body">
-        <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>A city market encourages <strong>dairy and market gardening close in</strong> because they're perishable and costly to ship. Grains and ranching move further out as transport costs matter less.</p></div>
+        <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>A city market encourages <strong>dairy and market gardening close in</strong> because they're perishable and costly to ship. Grains and ranching move further out.</p></div>
         <div class="aphug-ex-row"><span class="aphug-ex-label limit">Limit</span><p><strong>Refrigeration, highways, and global trade</strong> break the neat ring pattern. Modern supply chains mean dairy can ship thousands of miles.</p></div>
       </div>
     </div>
@@ -256,7 +365,7 @@
       <div class="aphug-example-head"><span class="aphug-ex-badge">Model</span><h4>Demographic Transition Model (DTM)</h4></div>
       <div class="aphug-example-body">
         <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>Country X has a <strong>high CBR and rapidly falling CDR</strong> due to improved sanitation → Stage 2 rapid population growth.</p></div>
-        <div class="aphug-ex-row"><span class="aphug-ex-label limit">Limit</span><p><strong>War, HIV/AIDS, or state policies</strong> (like China's one-child policy) can interrupt or distort the expected progression through stages.</p></div>
+        <div class="aphug-ex-row"><span class="aphug-ex-label limit">Limit</span><p><strong>War, HIV/AIDS, or state policies</strong> can interrupt or distort the expected progression through stages.</p></div>
       </div>
     </div>
     <div class="aphug-example">
@@ -270,21 +379,21 @@
       <div class="aphug-example-head"><span class="aphug-ex-badge">Model</span><h4>Gravity Model</h4></div>
       <div class="aphug-example-body">
         <div class="aphug-ex-row"><span class="aphug-ex-label setup">Setup</span><p>City A: pop. 2,000,000 | City B: pop. 500,000 | Distance: 100 km</p></div>
-        <div class="aphug-ex-row"><span class="aphug-ex-label insight">Insight</span><p>Because <strong>distance is squared,</strong> doubling the distance cuts interaction to one quarter. If two cities have similar distance, population decides; if similar populations, distance decides.</p></div>
+        <div class="aphug-ex-row"><span class="aphug-ex-label insight">Insight</span><p>Because <strong>distance is squared,</strong> doubling the distance cuts interaction to one quarter. If populations are similar, distance decides; if distance is similar, population decides.</p></div>
       </div>
     </div>
     <div class="aphug-example">
       <div class="aphug-example-head"><span class="aphug-ex-badge">Model</span><h4>Weber Least-Cost Theory</h4></div>
       <div class="aphug-example-body">
         <div class="aphug-ex-row"><span class="aphug-ex-label setup">Setup</span><p>A steel mill needs bulky inputs (iron ore + coal) and sells to a major metro market.</p></div>
-        <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>If inputs lose weight during processing, the plant locates <strong>near raw material sources</strong> to cut bulk transport costs. If the market dominates, it shifts toward consumers.</p></div>
-        <div class="aphug-ex-row"><span class="aphug-ex-label limit">Limit</span><p>Modern firms may prioritize <strong>skilled labor, just-in-time logistics, or tax incentives.</strong> Agglomeration economies can override transport logic entirely.</p></div>
+        <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>If inputs lose weight during processing, the plant locates <strong>near raw material sources</strong> to cut bulk transport costs.</p></div>
+        <div class="aphug-ex-row"><span class="aphug-ex-label limit">Limit</span><p>Modern firms may prioritize <strong>skilled labor, just-in-time logistics, or tax incentives.</strong> Agglomeration economies can override transport logic.</p></div>
       </div>
     </div>
     <div class="aphug-example">
       <div class="aphug-example-head"><span class="aphug-ex-badge">Model</span><h4>Latin American City Model (Griffin–Ford)</h4></div>
       <div class="aphug-example-body">
-        <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>A city shows elite high-rise development along one corridor from the CBD — that's the <strong>commercial spine/elite sector.</strong> Large informal settlements on the periphery match the periferico zone.</p></div>
+        <div class="aphug-ex-row"><span class="aphug-ex-label apply">Apply</span><p>Elite high-rise development along one corridor from the CBD = <strong>commercial spine/elite sector.</strong> Large informal settlements on the periphery match the periferico zone.</p></div>
         <div class="aphug-ex-row"><span class="aphug-ex-label limit">Limit</span><p>Rapid <strong>globalization can produce edge cities and polycentric patterns</strong> not captured by the model's single-spine structure.</p></div>
       </div>
     </div>
@@ -304,12 +413,12 @@
     </div>
     <div class="aphug-mistake">
       <h4>Treating Models as Universal Laws</h4>
-      <div class="aphug-mistake-row"><span class="aphug-mlabel why">Why Wrong</span><p>Force-fitting Burgess or von Thünen to every city. Models assume flat land, a single center, no planning, and an older industrial context.</p></div>
+      <div class="aphug-mistake-row"><span class="aphug-mlabel why">Why Wrong</span><p>Force-fitting Burgess or von Thünen to every city. Models assume flat land, single center, no planning, older industrial context.</p></div>
       <div class="aphug-mistake-row"><span class="aphug-mlabel fix">Fix</span><p>Always add a limitation — topography, zoning, highways, globalization, or colonial history all distort model predictions.</p></div>
     </div>
     <div class="aphug-mistake">
       <h4>Confusing Rank-Size with Primate</h4>
-      <div class="aphug-mistake-row"><span class="aphug-mlabel why">Why Wrong</span><p>These are different things. Rank-size is a distribution pattern; primate is one-city dominance.</p></div>
+      <div class="aphug-mistake-row"><span class="aphug-mlabel why">Why Wrong</span><p>Rank-size is a distribution pattern across many cities; primate is one-city dominance. They are not the same thing.</p></div>
       <div class="aphug-mistake-row"><span class="aphug-mlabel fix">Fix</span><p>Rank-size: use <strong>Pₙ = P₁/n.</strong> Primate: check if the largest city is &gt;2× the size of the #2 city.</p></div>
     </div>
     <div class="aphug-mistake">
@@ -319,7 +428,7 @@
     </div>
     <div class="aphug-mistake">
       <h4>Misreading Population Pyramids</h4>
-      <div class="aphug-mistake-row"><span class="aphug-mlabel why">Why Wrong</span><p>Seeing a wide base and saying "aging population." A wide base means <strong>high youth dependency</strong> and a high CBR — the opposite of aging.</p></div>
+      <div class="aphug-mistake-row"><span class="aphug-mlabel why">Why Wrong</span><p>Seeing a wide base and saying "aging population." A wide base means <strong>high youth dependency</strong> and a high CBR.</p></div>
       <div class="aphug-mistake-row"><span class="aphug-mlabel fix">Fix</span><p>Aging shows as a wide top — a rectangular or top-heavy structure with high old-age dependency.</p></div>
     </div>
     <div class="aphug-mistake">
@@ -336,46 +445,14 @@
     <div class="aphug-line"></div>
   </div>
   <div class="aphug-mnemonics">
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">DTM: High/High → Death drops → Birth drops → Low/Low → Below replacement</div>
-      <div class="aphug-mnemonic-helps">Remembers: DTM stage logic</div>
-      <div class="aphug-mnemonic-when">Use for: any population-growth prompt</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">Burgess: "CBD – Transition – Working – Middle – Commuter"</div>
-      <div class="aphug-mnemonic-helps">Remembers: Order of concentric zones</div>
-      <div class="aphug-mnemonic-when">Use for: urban land-use MCQ/FRQ</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">Hoyt = "pie slices"</div>
-      <div class="aphug-mnemonic-helps">Remembers: Sector wedges along transport</div>
-      <div class="aphug-mnemonic-when">Use for: distinguishing from Burgess</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">Multiple Nuclei = "many downtowns"</div>
-      <div class="aphug-mnemonic-helps">Remembers: Nodes like airports create centers</div>
-      <div class="aphug-mnemonic-when">Use for: modern/polycentric city questions</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">CPT: "Range = how far; Threshold = how many"</div>
-      <div class="aphug-mnemonic-helps">Remembers: The two most-tested CPT terms</div>
-      <div class="aphug-mnemonic-when">Use for: service distribution questions</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">Malthus vs Boserup: "Limits vs Innovation"</div>
-      <div class="aphug-mnemonic-helps">Remembers: Opposing population-food theories</div>
-      <div class="aphug-mnemonic-when">Use for: food security questions</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">Primate = "primary city" dominates</div>
-      <div class="aphug-mnemonic-helps">Remembers: Quick primate check</div>
-      <div class="aphug-mnemonic-when">Use for: comparing city sizes</div>
-    </div>
-    <div class="aphug-mnemonic">
-      <div class="aphug-mnemonic-trick">Diffusion: C-H-S-R</div>
-      <div class="aphug-mnemonic-helps">Remembers: Contagious, Hierarchical, Stimulus, Relocation</div>
-      <div class="aphug-mnemonic-when">Use for: culture/language/religion diffusion</div>
-    </div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">DTM: High/High → Death drops → Birth drops → Low/Low → Below replacement</div><div class="aphug-mnemonic-helps">Remembers: DTM stage logic</div><div class="aphug-mnemonic-when">Use for: any population-growth prompt</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">Burgess: "CBD – Transition – Working – Middle – Commuter"</div><div class="aphug-mnemonic-helps">Remembers: Order of concentric zones</div><div class="aphug-mnemonic-when">Use for: urban land-use MCQ/FRQ</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">Hoyt = "pie slices"</div><div class="aphug-mnemonic-helps">Remembers: Sector wedges along transport</div><div class="aphug-mnemonic-when">Use for: distinguishing from Burgess</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">Multiple Nuclei = "many downtowns"</div><div class="aphug-mnemonic-helps">Remembers: Nodes like airports create centers</div><div class="aphug-mnemonic-when">Use for: modern/polycentric city questions</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">CPT: "Range = how far; Threshold = how many"</div><div class="aphug-mnemonic-helps">Remembers: The two most-tested CPT terms</div><div class="aphug-mnemonic-when">Use for: service distribution questions</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">Malthus vs Boserup: "Limits vs Innovation"</div><div class="aphug-mnemonic-helps">Remembers: Opposing population-food theories</div><div class="aphug-mnemonic-when">Use for: food security questions</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">Primate = "primary city" dominates</div><div class="aphug-mnemonic-helps">Remembers: Quick primate check</div><div class="aphug-mnemonic-when">Use for: comparing city sizes</div></div>
+    <div class="aphug-mnemonic"><div class="aphug-mnemonic-trick">Diffusion: C-H-S-R</div><div class="aphug-mnemonic-helps">Remembers: Contagious, Hierarchical, Stimulus, Relocation</div><div class="aphug-mnemonic-when">Use for: culture/language/religion diffusion</div></div>
   </div>
 
   <!-- CHECKLIST -->
@@ -396,3 +473,5 @@
 
 </div>
 </div>
+</body>
+</html>
