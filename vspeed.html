@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,51,51,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,51,51,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .bg-glow {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,51,51,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card {
+    position: relative;
+    width: 480px;
+    background: rgba(255,255,255,0.02);
+    border: 1.5px solid rgba(255,51,51,0.15);
+    border-radius: 16px;
+    padding: 44px 40px 36px;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(255,51,51,0.06);
+    animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #ff3333;
+    margin-bottom: 18px;
+    opacity: 0.8;
+  }
+
+  .badge-dot {
+    width: 5px; height: 5px;
+    background: #ff3333;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .title {
+    font-size: 64px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .title .v { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+  .title .speed {
+    color: #ff3333;
+    text-shadow: 0 0 10px rgba(255,51,51,0.4), 0 0 30px rgba(255,51,51,0.15);
+  }
+
+  .subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #444;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .code-block {
+    background: rgba(255,255,255,0.02);
+    border: 1.5px solid rgba(255,51,51,0.12);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+    overflow: hidden;
+  }
+
+  .code-block:hover {
+    border-color: rgba(255,51,51,0.3);
+    background: rgba(255,51,51,0.04);
+  }
+
+  .code-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #666;
+    word-break: break-all;
+    line-height: 1.8;
+  }
+
+  .code-text .kw  { color: #ff3333; }
+  .code-text .fn  { color: #ff7a7a; }
+  .code-text .str { color: #ffaa66; }
+
+  .copy-btn {
+    width: 100%;
+    background: #ff3333;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .copy-btn:hover {
+    background: #ff1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255,51,51,0.3);
+  }
+
+  .copy-btn:active { transform: translateY(0); }
+
+  .copy-btn.copied {
+    background: rgba(255,255,255,0.06);
+    color: #4dff88;
+    box-shadow: none;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .meta-label { font-size: 11px; color: #2a2a2a; letter-spacing: 0.1em; text-transform: uppercase; }
+  .meta-link  { font-size: 11px; color: rgba(255,51,51,0.4); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+  .meta-link:hover { color: #ff3333; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="card">
+  <div class="badge"><div class="badge-dot"></div>Bookmarklet</div>
+  <div class="title"><span class="v">V</span><span class="speed">Speed</span></div>
+  <div class="subtitle">infuse.lol · browser tool</div>
+
+  <div class="label">Drag to bookmarks bar — or copy below</div>
+  <div class="code-block" id="codeBlock">
+    <div class="code-text" id="codeDisplay"></div>
+  </div>
+
+  <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+    <span id="btnText">Copy Bookmarklet</span>
+  </button>
+
+  <div class="meta-row">
+    <span class="meta-label">infuse.lol/tool.js</span>
+    <a class="meta-link" href="https://infuse.lol">infuse.lol ↗</a>
+  </div>
+</div>
+
+<script>
+const CODE = `javascript:(function(){const s=document.createElement('script');s.src='https://infuse.lol/tool.js?v='+Math.random();document.body.appendChild(s);void(0);})();`;
+
+function highlight(code) {
+  return code
+    .replace(/javascript:/g, '<span class="kw">javascript:</span>')
+    .replace(/\bfunction\b/g, '<span class="kw">function</span>')
+    .replace(/\bconst\b/g, '<span class="kw">const</span>')
+    .replace(/\bnew\b/g, '<span class="kw">new</span>')
+    .replace(/\bvoid\b/g, '<span class="kw">void</span>')
+    .replace(/(document\.(createElement|body|appendChild))/g, '<span class="fn">$1</span>')
+    .replace(/('https:\/\/infuse\.lol\/tool\.js\?v\=')/g, '<span class="str">$1</span>')
+    .replace(/(Math\.random)/g, '<span class="fn">$1</span>');
+}
+
+document.getElementById('codeDisplay').innerHTML = highlight(CODE);
+document.getElementById('codeBlock').addEventListener('click', copyCode);
+
+function copyCode() {
+  const btn = document.getElementById('copyBtn');
+  const txt = document.getElementById('btnText');
+  const copy = () => {
+    btn.classList.add('copied');
+    txt.textContent = '✓ Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); txt.textContent = 'Copy Bookmarklet'; }, 2200);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(CODE).then(copy);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = CODE; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); copy(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+}
+</script>
+</body>
+</html>
