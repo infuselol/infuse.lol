@@ -8,50 +8,302 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
-.logo{font-size:7rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:1rem;}
-.infuse{color:#ff3333;text-shadow:0 0 10px rgba(255,51,51,0.4),0 0 30px rgba(255,51,51,0.15);transition:all .3s;cursor:pointer;display:inline-block;}
-.infuse:hover{transform:translateY(-8px) scale(1.08);text-shadow:0 0 20px rgba(255,51,51,0.6),0 0 40px rgba(255,51,51,0.3);}
-.lol{color:#fff;text-shadow:0 0 10px rgba(255,255,255,0.2);transition:all .3s;cursor:pointer;display:inline-block;}
-.lol:hover{transform:translateY(-8px) scale(1.08);}
-.clock-wrapper{margin-bottom:2rem;display:flex;flex-direction:column;align-items:center;}
-.clock-time{font-family:'JetBrains Mono',monospace;font-size:3.2rem;font-weight:700;color:#fff;letter-spacing:0.04em;background:linear-gradient(180deg,#fff 0%,#aaa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,51,51,0.2));}
-.clock-time .clock-colon{color:#ff3333;-webkit-text-fill-color:#ff3333;opacity:.6;}
-.clock-time .clock-seconds{-webkit-text-fill-color:#ff3333;font-size:2.2rem;opacity:.7;}
-.clock-time .clock-ampm{-webkit-text-fill-color:#ff3333;font-size:1.1rem;margin-left:.4rem;font-weight:500;opacity:.8;}
-.clock-date{font-size:.82rem;color:#444;margin-top:.4rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;}
-.clock-label{font-size:.65rem;color:#2a2a2a;margin-top:.2rem;letter-spacing:.2em;text-transform:uppercase;}
-.socials-box{background:rgba(255,255,255,.02);border:1.5px solid rgba(255,51,51,.15);border-radius:16px;width:340px;height:100px;overflow:hidden;box-shadow:0 0 40px rgba(255,51,51,.06);backdrop-filter:blur(10px);margin-top:1.5rem;scrollbar-width:none;}
-.socials-box::-webkit-scrollbar{display:none;}
-.socials-scroll{display:flex;flex-direction:column;animation:scroll 10s linear infinite;pointer-events:none;}
-.social-item{pointer-events:auto;}
-.socials-scroll.paused{animation-play-state:paused;}
-@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(-300px)}}
-.social-item{display:flex;align-items:center;justify-content:center;gap:.75rem;padding:1.6rem 2rem;min-height:100px;transition:all .3s;cursor:pointer;}
-.social-item:hover{background:rgba(255,51,51,.08);}
-.social-icon{width:22px;height:22px;flex-shrink:0;}
-.social-text{color:#999;font-size:.92rem;font-weight:500;}
-@media(max-width:768px){.logo{font-size:3.5rem;}.clock-time{font-size:2rem;}.clock-time .clock-seconds{font-size:1.2rem;}.clock-time .clock-ampm{font-size:.9rem;}.socials-box{width:90vw;max-width:340px;}}
-@media(max-width:400px){.logo{font-size:2.8rem;}.clock-time{font-size:1.6rem;}.clock-time .clock-seconds{font-size:1rem;}}
+  :root {
+    --red: #ff3333;
+    --red-glow: rgba(255,51,51,0.4);
+    --red-dim: rgba(255,51,51,0.15);
+    --red-subtle: rgba(255,51,51,0.06);
+    --surface: rgba(255,255,255,0.02);
+    --border: rgba(255,51,51,0.15);
+    --text-muted: #444;
+    --text-dim: #2a2a2a;
+  }
+
+  /* ── Layout ── */
+  .page-content {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding-bottom: 60px;
+  }
+
+  /* ── Background grid ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,51,51,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,51,51,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(255,51,51,0.06) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page-content, nav { position: relative; z-index: 1; }
+
+  /* ── Clock ── */
+  .clock-wrapper {
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeUp 0.5s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .clock-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.4rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.04em;
+    background: linear-gradient(180deg, #fff 0%, #888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 24px rgba(255,51,51,0.2));
+  }
+  .clock-colon { color: var(--red); -webkit-text-fill-color: var(--red); opacity: .5; }
+  .clock-seconds { -webkit-text-fill-color: var(--red); font-size: 2.2rem; opacity: .6; }
+  .clock-ampm { -webkit-text-fill-color: var(--red); font-size: 1.1rem; margin-left: .5rem; font-weight: 500; opacity: .75; }
+  .clock-date {
+    font-size: .78rem; color: var(--text-muted);
+    margin-top: .5rem; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase;
+  }
+  .clock-tz {
+    font-size: .6rem; color: var(--text-dim);
+    margin-top: .2rem; letter-spacing: .22em; text-transform: uppercase;
+  }
+
+  /* ── Logo ── */
+  .logo-wrap {
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.5s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .logo {
+    font-size: 7rem; font-weight: 900;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .infuse {
+    color: var(--red);
+    text-shadow: 0 0 12px var(--red-glow), 0 0 35px var(--red-dim);
+    transition: all .3s; cursor: pointer; display: inline-block;
+  }
+  .infuse:hover { transform: translateY(-8px) scale(1.06); text-shadow: 0 0 22px rgba(255,51,51,0.7), 0 0 50px rgba(255,51,51,0.3); }
+  .lol {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.15);
+    transition: all .3s; cursor: pointer; display: inline-block;
+  }
+  .lol:hover { transform: translateY(-8px) scale(1.06); }
+
+  /* ── Socials box ── */
+  .socials-box {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    width: 340px; height: 100px;
+    overflow: hidden;
+    box-shadow: 0 0 40px var(--red-subtle);
+    backdrop-filter: blur(10px);
+    scrollbar-width: none;
+    animation: fadeUp 0.5s 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .socials-box::-webkit-scrollbar { display: none; }
+  .socials-scroll {
+    display: flex; flex-direction: column;
+    animation: scrollUp 10s linear infinite;
+    pointer-events: none;
+  }
+  .socials-scroll.paused { animation-play-state: paused; }
+  .social-item {
+    pointer-events: auto;
+    display: flex; align-items: center; justify-content: center;
+    gap: .75rem; padding: 1.6rem 2rem; min-height: 100px;
+    transition: all .25s; cursor: pointer;
+  }
+  .social-item:hover { background: rgba(255,51,51,0.07); }
+  .social-icon { width: 20px; height: 20px; flex-shrink: 0; }
+  .social-text { color: #888; font-size: .9rem; font-weight: 500; }
+  @keyframes scrollUp { 0% { transform: translateY(0); } 100% { transform: translateY(-300px); } }
+
+  /* ── Section divider ── */
+  .section-divider {
+    display: flex; align-items: center; gap: 16px;
+    width: 100%; max-width: 640px;
+    margin: 3rem 0 1.8rem;
+    animation: fadeUp 0.5s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,51,51,0.15), transparent);
+  }
+  .section-label {
+    font-size: .65rem; font-weight: 600;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: #333;
+  }
+
+  /* ── Tools grid ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%; max-width: 640px;
+    animation: fadeUp 0.5s 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .tool-card {
+    background: var(--surface);
+    border: 1.5px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 14px;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,51,51,0.06), transparent 60%);
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .tool-card:hover {
+    border-color: rgba(255,51,51,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(255,51,51,0.06);
+  }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-card.featured {
+    border-color: rgba(255,51,51,0.2);
+    box-shadow: 0 0 30px rgba(255,51,51,0.06);
+  }
+  .tool-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: rgba(255,51,51,0.08);
+    border: 1px solid rgba(255,51,51,0.15);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tool-icon svg { width: 18px; height: 18px; }
+  .tool-info { flex: 1; min-width: 0; }
+  .tool-name {
+    font-size: .88rem; font-weight: 700;
+    color: #ddd; letter-spacing: -.01em;
+    margin-bottom: 3px;
+  }
+  .tool-desc { font-size: .72rem; color: #444; line-height: 1.4; }
+  .tool-badge {
+    font-size: .58rem; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--red); background: rgba(255,51,51,0.1);
+    border: 1px solid rgba(255,51,51,0.2);
+    border-radius: 4px; padding: 2px 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── Copy notification ── */
+  .copy-notification {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: rgba(10,10,10,0.95);
+    border: 1.5px solid rgba(255,51,51,0.25);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: .8rem; font-weight: 600;
+    color: #fff; letter-spacing: .04em;
+    opacity: 0; pointer-events: none;
+    transition: all .25s;
+    backdrop-filter: blur(12px);
+    z-index: 9999;
+  }
+  .copy-notification.show {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 680px) {
+    .tools-grid { max-width: 100%; padding: 0 16px; }
+    .section-divider { max-width: 100%; padding: 0 16px; }
+  }
+  @media (max-width: 500px) {
+    .logo { font-size: 3.8rem; }
+    .clock-time { font-size: 2.2rem; }
+    .clock-seconds { font-size: 1.4rem; }
+    .clock-ampm { font-size: .9rem; }
+    .socials-box { width: 92vw; }
+    .tools-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 380px) {
+    .logo { font-size: 3rem; }
+    .clock-time { font-size: 1.8rem; }
+  }
 </style>
 </head>
 <body>
+
 <nav class="tab-bar">
-  <a class="tab active" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg><span class="tab-title">Home</span></a>
-  <a class="tab" href="/amongus"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg><span class="tab-title">Among Us</span></a>
-  <a class="tab" href="/aphug"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/></svg><span class="tab-title">AP HuG Models</span></a>
-  <a class="tab" href="/vocab3"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tab-title">AP HuG Vocab</span></a>
-  <a class="tab" href="/chat"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg><span class="tab-title">Chat</span></a>
-  <a class="tab" href="/flappy"><svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/><path d="M6 7l-2-3 1-1 3 2z" fill="#ff3333" opacity=".7"/><path d="M8 5l-1-3 1.5-.5 1.5 3z" fill="#ff3333" opacity=".5"/></svg><span class="tab-title">Flappy Bird</span></a>
+  <a class="tab active" href="/">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#ff3333"/></svg>
+    <span class="tab-title">Home</span>
+  </a>
+  <a class="tab" href="/amongus">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/><circle cx="9" cy="19" r="1.2" fill="#cc2222"/><circle cx="15" cy="19" r="1.2" fill="#cc2222"/></svg>
+    <span class="tab-title">Among Us</span>
+  </a>
+  <a class="tab" href="/aphug">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/></svg>
+    <span class="tab-title">AP HuG Models</span>
+  </a>
+  <a class="tab" href="/vocab3">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="tab-title">AP HuG Vocab</span>
+  </a>
+  <a class="tab" href="/chat">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/><path d="M7 9h10v2H7V9zm0-3h10v2H7V6zm0 6h7v2H7v-2z" fill="#ff3333" opacity=".4"/></svg>
+    <span class="tab-title">Chat</span>
+  </a>
+  <a class="tab" href="/flappy">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><circle cx="14.3" cy="8.2" r=".6" fill="#000"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/><path d="M6 7l-2-3 1-1 3 2z" fill="#ff3333" opacity=".7"/><path d="M8 5l-1-3 1.5-.5 1.5 3z" fill="#ff3333" opacity=".5"/></svg>
+    <span class="tab-title">Flappy Bird</span>
+  </a>
 </nav>
 
 <div class="page-content" style="flex-direction:column;align-items:center;justify-content:center;">
+
+  <!-- Clock -->
   <div class="clock-wrapper">
     <div class="clock-time" id="clockTime"></div>
     <div class="clock-date" id="clockDate"></div>
-    <div class="clock-label">Eastern Standard Time</div>
+    <div class="clock-tz">Eastern Time</div>
   </div>
-  <h1 class="logo"><span class="infuse">Infuse</span><span class="lol">.lol</span></h1>
-  <div class="socials-box">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <h1 class="logo"><span class="infuse">Infuse</span><span class="lol">.lol</span></h1>
+  </div>
+
+  <!-- Socials -->
+  <div class="socials-box" id="socialsBox">
     <div class="socials-scroll" id="socialsScroll">
       <div class="social-item">
         <svg class="social-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 7.8c-.15 2.58-.8 6.42-1.13 8.19-.14.75-.42 1-.68 1.02-.58.05-1.02-.39-1.58-.77-.88-.59-1.38-.97-2.23-1.55-.99-.68-.35-1.07.22-1.66.15-.15 2.79-2.53 2.84-2.76.01-.03.01-.14-.05-.19-.06-.05-.14-.03-.2-.02-.08.02-1.36.9-3.86 2.66-.35.25-.67.37-.95.36-.31-.01-.9-.18-1.35-.33-.55-.18-.98-.28-.95-.58.02-.16.25-.32.69-.49 2.69-1.15 4.52-1.91 5.6-2.28 2.55-1.04 3.07-1.23 3.42-1.23.07 0 .24.02.35.11.09.07.12.17.13.25z" fill="#ff3333"/></svg>
@@ -67,33 +319,130 @@
       </div>
     </div>
   </div>
+
+  <!-- Tools section -->
+  <div class="section-divider">
+    <span class="section-label">Tools &amp; Pages</span>
+  </div>
+
+  <div class="tools-grid">
+
+    <a class="tool-card featured" href="/vspeed">
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11L10 22L19.5 10H13L13 2Z" fill="#ff3333" stroke="#ff3333" stroke-width="0.5" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="tool-info">
+        <div class="tool-name">VSpeed</div>
+        <div class="tool-desc">Speed up any video on any page</div>
+      </div>
+      <div class="tool-badge">New</div>
+    </a>
+
+    <a class="tool-card" href="/chat">
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="#ff3333"/></svg>
+      </div>
+      <div class="tool-info">
+        <div class="tool-name">Chat</div>
+        <div class="tool-desc">AI chat powered by Infuse</div>
+      </div>
+    </a>
+
+    <a class="tool-card" href="/aphug">
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/></svg>
+      </div>
+      <div class="tool-info">
+        <div class="tool-name">AP HuG Models</div>
+        <div class="tool-desc">Geography models reference</div>
+      </div>
+    </a>
+
+    <a class="tool-card" href="/vocab3">
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z" fill="#ff3333"/><circle cx="19" cy="18" r="4" fill="#ff3333" opacity=".3" stroke="#ff3333" stroke-width="1.5"/><path d="M17.5 18l1 1 2-2" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="tool-info">
+        <div class="tool-name">AP HuG Vocab</div>
+        <div class="tool-desc">Vocabulary flashcards &amp; review</div>
+      </div>
+    </a>
+
+    <a class="tool-card" href="/flappy">
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="7" fill="#ff3333"/><circle cx="14" cy="8" r="1.5" fill="#fff"/><path d="M16 10.5h4l-1-1.5h-3z" fill="#ffaa33"/></svg>
+      </div>
+      <div class="tool-info">
+        <div class="tool-name">Flappy Bird</div>
+        <div class="tool-desc">The classic, infuse edition</div>
+      </div>
+    </a>
+
+    <a class="tool-card" href="/amongus">
+      <div class="tool-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 6 5 6 9v6c0 1 .5 2.5 2 3l-1 3h2l1-2h4l1 2h2l-1-3c1.5-.5 2-2 2-3V9c0-4-2-7-6-7z" fill="#ff3333"/><rect x="8" y="7" width="8" height="4" rx="2" fill="#66ccff" opacity=".85"/></svg>
+      </div>
+      <div class="tool-info">
+        <div class="tool-name">Among Us</div>
+        <div class="tool-desc">Crewmate strategy helper</div>
+      </div>
+    </a>
+
+  </div>
+
 </div>
 
-<div class="copy-notification" id="copyNotification">Copied to clipboard!</div>
+<div class="copy-notification" id="copyNotification">Copied!</div>
 
 <script>
-// Clock
-function updateClock(){
-  const now=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
-  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
-  const ampm=h>=12?'PM':'AM';h=h%12||12;
-  document.getElementById('clockTime').innerHTML=`${h}<span class="clock-colon">:</span>${String(m).padStart(2,'0')}<span class="clock-seconds">:${String(s).padStart(2,'0')}</span><span class="clock-ampm">${ampm}</span>`;
-  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('clockDate').textContent=`${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+// ── Clock ──
+function updateClock() {
+  const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clockTime').innerHTML =
+    `${h}<span class="clock-colon">:</span>${String(m).padStart(2,'0')}<span class="clock-seconds">:${String(s).padStart(2,'0')}</span><span class="clock-ampm">${ampm}</span>`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('clockDate').textContent =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
 }
-updateClock();setInterval(updateClock,1000);
+updateClock();
+setInterval(updateClock, 1000);
 
-// Socials scroll + copy
-const scroll=document.getElementById('socialsScroll');
-document.querySelectorAll('.social-item').forEach(item=>scroll.appendChild(item.cloneNode(true)));
-document.querySelectorAll('.social-item').forEach(item=>{
-  item.addEventListener('pointerdown',e=>{
-    e.preventDefault();e.stopPropagation();
-    const text=item.querySelector('.social-text').textContent;
-    const copy=()=>{const n=document.getElementById('copyNotification');n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2000);};
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(copy);}
-    else{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');copy();}catch(e){}document.body.removeChild(ta);}
+// ── Socials scroll + copy ──
+const scroll = document.getElementById('socialsScroll');
+document.querySelectorAll('.social-item').forEach(item => scroll.appendChild(item.cloneNode(true)));
+
+const box = document.getElementById('socialsBox');
+box.addEventListener('mouseenter', () => scroll.classList.add('paused'));
+box.addEventListener('mouseleave', () => scroll.classList.remove('paused'));
+
+function showCopyNote() {
+  const n = document.getElementById('copyNotification');
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 2000);
+}
+
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopyNote);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showCopyNote(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+}
+
+document.querySelectorAll('.social-item').forEach(item => {
+  item.addEventListener('pointerdown', e => {
+    e.preventDefault(); e.stopPropagation();
+    copyText(item.querySelector('.social-text').textContent);
   });
 });
 </script>
